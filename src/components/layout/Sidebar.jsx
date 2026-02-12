@@ -17,7 +17,8 @@ import {
   Menu,
   X,
   Hexagon,
-  ShoppingBag
+  ShoppingBag,
+  Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +45,7 @@ const navItems = [
       { label: "Inventory Manager", icon: Package, page: "InventoryManager" },
     ],
   },
+  { label: "Users", icon: Users, page: "UserManagement" },
   { label: "Settings", icon: Settings, page: "Settings" },
 ];
 
