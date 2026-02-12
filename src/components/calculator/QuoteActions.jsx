@@ -83,7 +83,7 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="flex-1 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-xl h-11 shadow-lg shadow-violet-500/20"
+        className="flex-1 bg-gradient-to-r from-[#1E73FF] to-[#0056D6] hover:from-[#4A9AFF] hover:to-[#1E73FF] text-white rounded-xl h-11 shadow-lg shadow-[#1E73FF]/20"
       >
         <Save className="w-4 h-4 mr-2" />
         {saving ? "Saving..." : "Save Quote"}
