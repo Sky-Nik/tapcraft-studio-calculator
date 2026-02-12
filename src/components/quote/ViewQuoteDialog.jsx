@@ -15,6 +15,9 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
       const canvas = await html2canvas(element, {
         scale: 2,
         backgroundColor: '#ffffff',
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
       });
       
       const imgData = canvas.toDataURL('image/png');
@@ -22,7 +25,21 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      // Handle multi-page PDF if content is too long
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      let heightLeft = pdfHeight;
+      let position = 0;
+      
+      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+      heightLeft -= pageHeight;
+      
+      while (heightLeft > 0) {
+        position = heightLeft - pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+        heightLeft -= pageHeight;
+      }
+      
       pdf.save(`quote-${quote.part_name}-${new Date().toISOString().split('T')[0]}.pdf`);
       
       toast.success("PDF exported successfully");
@@ -58,7 +75,7 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
           <div className="flex justify-between items-start mb-8 pb-6 border-b-2 border-gray-200">
             <div>
               {company.logo_url && (
-                <img src={company.logo_url} alt="Company Logo" className="h-16 mb-3" />
+                <img src={company.logo_url} alt="Company Logo" className="h-16 mb-3" crossOrigin="anonymous" />
               )}
               <h1 className="text-2xl font-bold text-gray-900">{company.company_name || "TapCraft Studio"}</h1>
               {company.address && <p className="text-sm text-gray-600 mt-1">{company.address}</p>}
