@@ -27,7 +27,7 @@ const MetricCard = ({ icon: Icon, label, value, accent, delay, highlighted }) =>
   </motion.div>
 );
 
-export default function CalculatedMetrics({ costs, advancedSettings }) {
+export default function CalculatedMetrics({ costs, advancedSettings, totalInvestment = 0 }) {
   const s = advancedSettings;
   
   // Calculate metrics

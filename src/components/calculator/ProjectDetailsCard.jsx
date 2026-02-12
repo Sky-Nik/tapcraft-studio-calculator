@@ -89,68 +89,96 @@ export default function ProjectDetailsCard({
             />
           </FieldWithTooltip>
 
-          <div className="grid grid-cols-2 gap-3">
-            <FieldWithTooltip label="Printer Profile" tooltip="Select which printer will be used">
-              <Select value={inputs.printerProfile} onValueChange={(v) => handleInput("printerProfile", v)}>
+          <FieldWithTooltip label="Printer Profile" tooltip="Select which printer will be used">
+            <Select value={inputs.printerProfile} onValueChange={(v) => handleInput("printerProfile", v)}>
+              <SelectTrigger className={inputClass}>
+                <SelectValue placeholder="Select printer" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
+                {printerProfiles.map((p) => (
+                  <SelectItem key={p.id} value={p.id} className="text-slate-200 focus:bg-violet-500/20 focus:text-white">
+                    {p.name}
+                  </SelectItem>
+                ))}
+                {printerProfiles.length === 0 && (
+                  <SelectItem value="default" className="text-slate-400">Default Printer</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          </FieldWithTooltip>
+
+          <FieldWithTooltip label="Filament Materials" tooltip="Add one or more filaments used">
+            <div className="space-y-2">
+              <Select onValueChange={(filamentId) => {
+                const filament = filamentTypes.find(f => f.id === filamentId);
+                if (filament) {
+                  setInputs(prev => ({
+                    ...prev,
+                    filamentRows: [...prev.filamentRows, { filamentId, usage: 0 }]
+                  }));
+                }
+              }}>
                 <SelectTrigger className={inputClass}>
-                  <SelectValue placeholder="Select printer" />
+                  <SelectValue placeholder="Add filament..." />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-slate-700">
-                  {printerProfiles.map((p) => (
-                    <SelectItem key={p.id} value={p.id} className="text-slate-200 focus:bg-violet-500/20 focus:text-white">
-                      {p.name}
+                  {filamentTypes.map((f) => (
+                    <SelectItem key={f.id} value={f.id} className="text-slate-200 focus:bg-violet-500/20 focus:text-white">
+                      {f.name} - {f.material} - ${f.cost_per_kg}/kg
                     </SelectItem>
                   ))}
-                  {printerProfiles.length === 0 && (
-                    <SelectItem value="default" className="text-slate-400">Default Printer</SelectItem>
+                  {filamentTypes.length === 0 && (
+                    <SelectItem value="none" disabled className="text-slate-500">No filaments in inventory</SelectItem>
                   )}
                 </SelectContent>
               </Select>
-            </FieldWithTooltip>
 
-            <FieldWithTooltip label="Filament Type" tooltip="Material type affects cost calculation">
-              <Select value={inputs.filamentType} onValueChange={(v) => handleInput("filamentType", v)}>
-                <SelectTrigger className={inputClass}>
-                  <SelectValue placeholder="Select material" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-700">
-                  {filamentTypes.length > 0 ? filamentTypes.map((f) => (
-                    <SelectItem key={f.id} value={f.id} className="text-slate-200 focus:bg-violet-500/20 focus:text-white">
-                      {f.name} ({f.material})
-                    </SelectItem>
-                  )) : (
-                    <>
-                      <SelectItem value="PLA" className="text-slate-200 focus:bg-violet-500/20">PLA</SelectItem>
-                      <SelectItem value="PETG" className="text-slate-200 focus:bg-violet-500/20">PETG</SelectItem>
-                      <SelectItem value="ABS" className="text-slate-200 focus:bg-violet-500/20">ABS</SelectItem>
-                      <SelectItem value="Resin" className="text-slate-200 focus:bg-violet-500/20">Resin</SelectItem>
-                    </>
-                  )}
-                </SelectContent>
-              </Select>
-            </FieldWithTooltip>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <FieldWithTooltip label="Cost per kg/L ($)" tooltip="Price per kilogram or liter of material">
-              <Input
-                type="number"
-                className={inputClass}
-                placeholder="0.00"
-                value={inputs.costPerKg || ""}
-                onChange={(e) => handleInput("costPerKg", parseFloat(e.target.value) || 0)}
-              />
-            </FieldWithTooltip>
-            <FieldWithTooltip label="Material Weight (g/ml)" tooltip="Amount of material used for this part">
-              <Input
-                type="number"
-                className={inputClass}
-                placeholder="0"
-                value={inputs.materialWeightG || ""}
-                onChange={(e) => handleInput("materialWeightG", parseFloat(e.target.value) || 0)}
-              />
-            </FieldWithTooltip>
-          </div>
+              {inputs.filamentRows.length > 0 && (
+                <div className="space-y-1.5">
+                  {inputs.filamentRows.map((row, idx) => {
+                    const filament = filamentTypes.find(f => f.id === row.filamentId);
+                    return (
+                      <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 border border-slate-700/50">
+                        <div className="flex-1">
+                          <p className="text-xs text-slate-300 font-medium">{filament?.name || 'Unknown'}</p>
+                          <p className="text-[10px] text-slate-500">${filament?.cost_per_kg || 0}/kg (auto)</p>
+                        </div>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          className="w-20 h-8 text-xs bg-slate-900/50"
+                          value={row.usage || ""}
+                          onChange={(e) => {
+                            const newRows = [...inputs.filamentRows];
+                            newRows[idx].usage = parseFloat(e.target.value) || 0;
+                            setInputs(prev => ({ ...prev, filamentRows: newRows }));
+                          }}
+                        />
+                        <span className="text-[10px] text-slate-500 w-6">g</span>
+                        <button
+                          onClick={() => {
+                            setInputs(prev => ({
+                              ...prev,
+                              filamentRows: prev.filamentRows.filter((_, i) => i !== idx)
+                            }));
+                          }}
+                          className="w-6 h-6 rounded flex items-center justify-center hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                  <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-violet-500/10 border border-violet-500/30">
+                    <span className="text-xs font-semibold text-violet-300">Total Material</span>
+                    <span className="text-sm font-bold text-violet-400">
+                      {inputs.filamentRows.reduce((sum, r) => sum + (r.usage || 0), 0).toFixed(1)}g
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </FieldWithTooltip>
 
           <FieldWithTooltip label="Printing Time" tooltip="Total estimated print time">
             <div className="grid grid-cols-2 gap-3">

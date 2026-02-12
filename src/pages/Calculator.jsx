@@ -15,9 +15,7 @@ export default function Calculator() {
   const [inputs, setInputs] = useState({
     partName: "",
     printerProfile: "",
-    filamentType: "",
-    costPerKg: 25,
-    materialWeightG: 0,
+    filamentRows: [],
     printTimeHours: 0,
     printTimeMinutes: 0,
     laborTimeMinutes: 0,
@@ -46,6 +44,11 @@ export default function Calculator() {
     queryFn: () => base44.entities.HardwareItem.list(),
   });
 
+  // Calculate total investment from printers
+  const totalInvestment = useMemo(() => {
+    return printerProfiles.reduce((sum, printer) => sum + (printer.printer_cost || 0), 0);
+  }, [printerProfiles]);
+
   // Calculate total hardware cost from selected items
   const totalHardwareCost = useMemo(() => {
     return inputs.selectedHardware.reduce((total, hwId) => {
@@ -54,10 +57,26 @@ export default function Calculator() {
     }, 0);
   }, [inputs.selectedHardware, hardwareItems]);
 
+  // Populate filament costs from database
+  const enrichedFilamentRows = useMemo(() => {
+    return inputs.filamentRows.map(row => {
+      const filament = filamentTypes.find(f => f.id === row.filamentId);
+      return {
+        ...row,
+        costPerKg: filament?.cost_per_kg || 0,
+        filamentName: filament?.name || '',
+      };
+    });
+  }, [inputs.filamentRows, filamentTypes]);
+
   // Real-time cost calculation
   const costs = useMemo(() => {
-    return calculateCosts({ ...inputs, hardwareCost: totalHardwareCost }, advancedSettings);
-  }, [inputs, advancedSettings, totalHardwareCost]);
+    return calculateCosts({ 
+      ...inputs, 
+      hardwareCost: totalHardwareCost,
+      filamentRows: enrichedFilamentRows 
+    }, advancedSettings);
+  }, [inputs, advancedSettings, totalHardwareCost, enrichedFilamentRows]);
 
   const batchQty = inputs.batchEnabled ? inputs.batchQuantity : 1;
 
@@ -100,7 +119,7 @@ export default function Calculator() {
         </div>
 
         {/* Calculated Metrics */}
-        <CalculatedMetrics costs={costs} advancedSettings={advancedSettings} />
+        <CalculatedMetrics costs={costs} advancedSettings={advancedSettings} totalInvestment={totalInvestment} />
 
         {/* Actions */}
         <QuoteActions

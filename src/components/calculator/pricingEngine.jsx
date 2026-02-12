@@ -25,8 +25,7 @@ export const MARGIN_TIERS = [
 
 export function calculateCosts(inputs, settings = DEFAULT_SETTINGS) {
   const {
-    materialWeightG = 0,
-    costPerKg = 0,
+    filamentRows = [],
     printTimeHours = 0,
     printTimeMinutes = 0,
     laborTimeMinutes = 0,
@@ -41,8 +40,15 @@ export function calculateCosts(inputs, settings = DEFAULT_SETTINGS) {
   const totalPrintHours = printTimeHours + printTimeMinutes / 60;
   const laborHours = laborTimeMinutes / 60;
 
-  // Material cost
-  const materialCost = (materialWeightG * (costPerKg / 1000)) * s.materialEfficiency;
+  // Material cost from all filament rows
+  const materialCost = filamentRows.reduce((total, row) => {
+    const usageG = row.usage || 0;
+    const costPerKg = row.costPerKg || 0;
+    return total + (usageG * (costPerKg / 1000));
+  }, 0) * s.materialEfficiency;
+
+  // Total material weight
+  const totalMaterialWeight = filamentRows.reduce((sum, row) => sum + (row.usage || 0), 0);
 
   // Electricity cost
   const electricityCost = (s.powerConsumptionWatts / 1000) * totalPrintHours * s.electricityCostPerKwh;
@@ -56,27 +62,27 @@ export function calculateCosts(inputs, settings = DEFAULT_SETTINGS) {
   // Labor cost
   const laborCost = s.laborRate * laborHours;
 
-  // Subtotal before buffer
-  const subtotal = materialCost + laborCost + machineCost + hardwareCost + packagingCost;
+  // Unit base cost (for one unit)
+  const unitBaseCost = (materialCost + laborCost + machineCost + hardwareCost + packagingCost) * s.bufferFactor;
 
-  // Apply buffer factor
-  const totalCost = subtotal * s.bufferFactor;
+  // Batch total cost
+  const batchBaseCost = unitBaseCost * batchQuantity;
 
-  // Per-unit cost for batch
-  const unitCost = batchQuantity > 1 ? totalCost / batchQuantity : totalCost;
-
-  // Calculate pricing tiers
+  // Calculate pricing tiers (CORRECTED BATCH LOGIC)
   const pricingTiers = MARGIN_TIERS.map((tier) => {
-    const price = totalCost / (1 - tier.margin / 100);
-    const profit = price - totalCost;
-    const priceWithVat = price * (1 + s.vatPercent / 100);
+    const profit = (tier.margin / 100) * batchBaseCost;
+    const subtotalWithProfit = batchBaseCost + profit;
+    const vat = (s.vatPercent / 100) * subtotalWithProfit;
+    const grandTotal = subtotalWithProfit + vat;
+    const unitSellPrice = grandTotal / batchQuantity;
+    
     return {
       ...tier,
-      price,
+      price: subtotalWithProfit,
       profit,
-      priceWithVat,
-      unitPrice: batchQuantity > 1 ? price / batchQuantity : price,
-      unitPriceWithVat: batchQuantity > 1 ? priceWithVat / batchQuantity : priceWithVat,
+      priceWithVat: grandTotal,
+      unitPrice: unitSellPrice,
+      unitPriceWithVat: unitSellPrice,
     };
   });
 
@@ -96,13 +102,14 @@ export function calculateCosts(inputs, settings = DEFAULT_SETTINGS) {
     laborCost,
     hardwareCost: hardwareCost,
     packagingCost: packagingCost,
-    subtotal,
-    totalCost,
-    unitCost,
+    subtotal: unitBaseCost,
+    totalCost: batchBaseCost,
+    unitCost: unitBaseCost,
     pricingTiers,
     breakdown,
     totalPrintHours,
     laborHours,
+    totalMaterialWeight,
   };
 }
 

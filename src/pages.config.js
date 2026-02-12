@@ -49,28 +49,28 @@
  */
 import Calculator from './pages/Calculator';
 import Dashboard from './pages/Dashboard';
-import QuoteHistory from './pages/QuoteHistory';
+import EtsyCalculator from './pages/EtsyCalculator';
 import Filaments from './pages/Filaments';
-import Printers from './pages/Printers';
 import Hardware from './pages/Hardware';
 import Packaging from './pages/Packaging';
-import Tools from './pages/Tools';
+import Printers from './pages/Printers';
+import QuoteHistory from './pages/QuoteHistory';
 import Settings from './pages/Settings';
-import EtsyCalculator from './pages/EtsyCalculator';
+import Tools from './pages/Tools';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Calculator": Calculator,
     "Dashboard": Dashboard,
-    "QuoteHistory": QuoteHistory,
+    "EtsyCalculator": EtsyCalculator,
     "Filaments": Filaments,
-    "Printers": Printers,
     "Hardware": Hardware,
     "Packaging": Packaging,
-    "Tools": Tools,
+    "Printers": Printers,
+    "QuoteHistory": QuoteHistory,
     "Settings": Settings,
-    "EtsyCalculator": EtsyCalculator,
+    "Tools": Tools,
 }
 
 export const pagesConfig = {

@@ -64,6 +64,7 @@ export default function Dashboard() {
     queryFn: () => base44.entities.PrinterProfile.list(),
   });
 
+  const totalInvestment = printers.reduce((sum, p) => sum + (p.printer_cost || 0), 0);
   const totalRevenue = quotes.reduce((sum, q) => sum + (q.final_price || 0), 0);
   const totalCost = quotes.reduce((sum, q) => sum + (q.total_cost || 0), 0);
   const avgMargin = quotes.length > 0
@@ -98,10 +99,10 @@ export default function Dashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={FileText} label="Total Quotes" value={quotes.length} accent="text-violet-400" bg="bg-violet-500/10" delay={0} />
-        <StatCard icon={DollarSign} label="Total Revenue" value={`$${totalRevenue.toFixed(0)}`} accent="text-emerald-400" bg="bg-emerald-500/10" delay={0.05} />
-        <StatCard icon={TrendingUp} label="Avg Margin" value={`${avgMargin.toFixed(0)}%`} accent="text-blue-400" bg="bg-blue-500/10" delay={0.1} />
-        <StatCard icon={Layers} label="Materials" value={filaments.length} accent="text-amber-400" bg="bg-amber-500/10" delay={0.15} />
+        <StatCard icon={DollarSign} label="Total Investment" value={`$${totalInvestment.toFixed(0)}`} accent="text-emerald-400" bg="bg-emerald-500/10" delay={0} />
+        <StatCard icon={FileText} label="Total Quotes" value={quotes.length} accent="text-violet-400" bg="bg-violet-500/10" delay={0.05} />
+        <StatCard icon={DollarSign} label="Total Revenue" value={`$${totalRevenue.toFixed(0)}`} accent="text-blue-400" bg="bg-blue-500/10" delay={0.1} />
+        <StatCard icon={TrendingUp} label="Avg Margin" value={`${avgMargin.toFixed(0)}%`} accent="text-amber-400" bg="bg-amber-500/10" delay={0.15} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
