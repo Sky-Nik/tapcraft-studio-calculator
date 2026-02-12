@@ -79,7 +79,7 @@ export default function Sidebar({ currentPage }) {
                   className={cn(
                     "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                     groupActive
-                      ? "text-violet-300"
+                      ? "text-[#1E73FF]"
                       : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
                   )}
                 >
@@ -101,7 +101,7 @@ export default function Sidebar({ currentPage }) {
                         className={cn(
                           "flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200",
                           isActive(child.page)
-                            ? "text-white bg-violet-500/10 shadow-sm"
+                            ? "text-white bg-[#1E73FF]/10 shadow-sm"
                             : "text-slate-500 hover:text-slate-300 hover:bg-white/[0.04]"
                         )}
                       >
@@ -123,11 +123,11 @@ export default function Sidebar({ currentPage }) {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
                 isActive(item.page)
-                  ? "text-white bg-gradient-to-r from-violet-500/15 to-indigo-500/10 shadow-sm border border-violet-500/10"
+                  ? "text-white bg-gradient-to-r from-[#1E73FF]/15 to-[#0056D6]/10 shadow-sm border border-[#1E73FF]/10"
                   : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
               )}
             >
-              <item.icon className={cn("w-[18px] h-[18px]", isActive(item.page) && "text-violet-400")} />
+              <item.icon className={cn("w-[18px] h-[18px]", isActive(item.page) && "text-[#1E73FF]")} />
               {item.label}
             </Link>
           );
@@ -136,7 +136,7 @@ export default function Sidebar({ currentPage }) {
 
       {/* Bottom section */}
       <div className="px-4 py-4 border-t border-white/[0.06]">
-        <div className="bg-gradient-to-br from-violet-500/10 to-indigo-500/5 rounded-xl p-4 border border-violet-500/10">
+        <div className="bg-gradient-to-br from-[#1E73FF]/10 to-[#0056D6]/5 rounded-xl p-4 border border-[#1E73FF]/10">
           <p className="text-xs text-slate-400 font-medium">Pro Tip</p>
           <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
             Use batch mode for bulk orders to get volume discounts on machine costs.
