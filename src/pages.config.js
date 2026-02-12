@@ -52,12 +52,13 @@ import Dashboard from './pages/Dashboard';
 import EtsyCalculator from './pages/EtsyCalculator';
 import Filaments from './pages/Filaments';
 import Hardware from './pages/Hardware';
+import InventoryManager from './pages/InventoryManager';
 import Packaging from './pages/Packaging';
 import Printers from './pages/Printers';
 import QuoteHistory from './pages/QuoteHistory';
 import Settings from './pages/Settings';
 import Tools from './pages/Tools';
-import InventoryManager from './pages/InventoryManager';
+import Sales from './pages/Sales';
 import __Layout from './Layout.jsx';
 
 
@@ -67,12 +68,13 @@ export const PAGES = {
     "EtsyCalculator": EtsyCalculator,
     "Filaments": Filaments,
     "Hardware": Hardware,
+    "InventoryManager": InventoryManager,
     "Packaging": Packaging,
     "Printers": Printers,
     "QuoteHistory": QuoteHistory,
     "Settings": Settings,
     "Tools": Tools,
-    "InventoryManager": InventoryManager,
+    "Sales": Sales,
 }
 
 export const pagesConfig = {
