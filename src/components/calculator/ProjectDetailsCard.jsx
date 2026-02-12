@@ -30,7 +30,7 @@ function FieldWithTooltip({ label, tooltip, children }) {
   );
 }
 
-const inputClass = "bg-slate-800/50 border-slate-700/50 text-white placeholder:text-slate-600 rounded-xl h-10 text-sm focus:border-violet-500/50 focus:ring-violet-500/20 input-glow transition-all";
+const inputClass = "bg-slate-800/50 border-slate-700/50 text-white placeholder:text-slate-600 rounded-xl h-10 text-sm focus:border-[#1E73FF]/50 focus:ring-[#1E73FF]/20 input-glow transition-all";
 
 export default function ProjectDetailsCard({
   inputs,
@@ -114,7 +114,7 @@ export default function ProjectDetailsCard({
               </SelectTrigger>
               <SelectContent className="bg-slate-800 border-slate-700">
                 {printerProfiles.map((p) => (
-                  <SelectItem key={p.id} value={p.id} className="text-slate-200 focus:bg-violet-500/20 focus:text-white">
+                  <SelectItem key={p.id} value={p.id} className="text-slate-200 focus:bg-[#1E73FF]/20 focus:text-white">
                     {p.name}
                   </SelectItem>
                 ))}
@@ -141,7 +141,7 @@ export default function ProjectDetailsCard({
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-slate-700">
                   {filamentTypes.map((f) => (
-                    <SelectItem key={f.id} value={f.id} className="text-slate-200 focus:bg-violet-500/20 focus:text-white">
+                    <SelectItem key={f.id} value={f.id} className="text-slate-200 focus:bg-[#1E73FF]/20 focus:text-white">
                       {f.name} - {f.material} - ${f.cost_per_kg}/kg
                     </SelectItem>
                   ))}
@@ -187,9 +187,9 @@ export default function ProjectDetailsCard({
                       </div>
                     );
                   })}
-                  <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-violet-500/10 border border-violet-500/30">
-                    <span className="text-xs font-semibold text-violet-300">Total Material</span>
-                    <span className="text-sm font-bold text-violet-400">
+                  <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#1E73FF]/10 border border-[#1E73FF]/30">
+                    <span className="text-xs font-semibold text-[#4A9AFF]">Total Material</span>
+                    <span className="text-sm font-bold text-[#1E73FF]">
                       {inputs.filamentRows.reduce((sum, r) => sum + (r.usage || 0), 0).toFixed(1)}g
                     </span>
                   </div>
@@ -246,7 +246,7 @@ export default function ProjectDetailsCard({
                       <SelectItem
                         key={item.id}
                         value={item.id}
-                        className="text-slate-200 focus:bg-violet-500/20 focus:text-white"
+                        className="text-slate-200 focus:bg-[#1E73FF]/20 focus:text-white"
                       >
                         {item.name} - ${item.unit_cost?.toFixed(2) || "0.00"}
                       </SelectItem>
@@ -284,9 +284,9 @@ export default function ProjectDetailsCard({
                       </div>
                     );
                   })}
-                  <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-violet-500/10 border border-violet-500/30">
-                    <span className="text-xs font-semibold text-violet-300">Total Hardware Cost</span>
-                    <span className="text-sm font-bold text-violet-400">${totalHardwareCost.toFixed(2)}</span>
+                  <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#1E73FF]/10 border border-[#1E73FF]/30">
+                    <span className="text-xs font-semibold text-[#4A9AFF]">Total Hardware Cost</span>
+                    <span className="text-sm font-bold text-[#1E73FF]">${totalHardwareCost.toFixed(2)}</span>
                   </div>
                 </div>
               )}
@@ -306,7 +306,7 @@ export default function ProjectDetailsCard({
                       <SelectItem
                         key={item.id}
                         value={item.id}
-                        className="text-slate-200 focus:bg-violet-500/20 focus:text-white"
+                        className="text-slate-200 focus:bg-[#1E73FF]/20 focus:text-white"
                       >
                         {item.name} - ${item.unit_cost?.toFixed(2) || "0.00"}
                       </SelectItem>
@@ -344,9 +344,9 @@ export default function ProjectDetailsCard({
                       </div>
                     );
                   })}
-                  <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-violet-500/10 border border-violet-500/30">
-                    <span className="text-xs font-semibold text-violet-300">Total Packaging Cost</span>
-                    <span className="text-sm font-bold text-violet-400">${totalPackagingCost.toFixed(2)}</span>
+                  <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#1E73FF]/10 border border-[#1E73FF]/30">
+                    <span className="text-xs font-semibold text-[#4A9AFF]">Total Packaging Cost</span>
+                    <span className="text-sm font-bold text-[#1E73FF]">${totalPackagingCost.toFixed(2)}</span>
                   </div>
                 </div>
               )}
@@ -356,7 +356,7 @@ export default function ProjectDetailsCard({
           {/* Batch toggle */}
           <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-800/30 border border-white/[0.04]">
             <div className="flex items-center gap-3">
-              <Layers className="w-4 h-4 text-violet-400" />
+              <Layers className="w-4 h-4 text-[#1E73FF]" />
               <div>
                 <p className="text-sm font-medium text-slate-300">Batch Production</p>
                 <p className="text-[11px] text-slate-500">Calculate for multiple units</p>

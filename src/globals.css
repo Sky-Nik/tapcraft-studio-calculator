@@ -75,17 +75,17 @@ body {
 }
 
 /* Glow effects */
-.glow-purple {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 60px rgba(139, 92, 246, 0.05);
+.glow-blue {
+  box-shadow: 0 0 20px rgba(30, 115, 255, 0.15), 0 0 60px rgba(30, 115, 255, 0.05);
 }
 
-.glow-purple-sm {
-  box-shadow: 0 0 10px rgba(139, 92, 246, 0.1);
+.glow-blue-sm {
+  box-shadow: 0 0 10px rgba(30, 115, 255, 0.1);
 }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1, #a78bfa);
+  background: linear-gradient(135deg, #1E73FF, #0056D6, #4A9AFF);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -97,10 +97,10 @@ body {
 }
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(139, 92, 246, 0.1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(30, 115, 255, 0.1);
 }
 
 /* Input focus glow */
 .input-glow:focus {
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2), 0 0 15px rgba(139, 92, 246, 0.1);
+  box-shadow: 0 0 0 2px rgba(30, 115, 255, 0.2), 0 0 15px rgba(30, 115, 255, 0.1);
 }

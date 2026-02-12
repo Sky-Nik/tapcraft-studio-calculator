@@ -39,8 +39,8 @@ export default function BatchProductionCard({
             <p className="text-2xl font-bold text-white">AUD {unitCost.toFixed(2)}</p>
             <p className="text-[10px] text-slate-600 mt-1">Per single item</p>
           </div>
-          <div className="rounded-xl bg-violet-500/10 border border-violet-500/30 p-4">
-            <p className="text-xs text-violet-400 mb-1">Batch Total ({batchQuantity} units)</p>
+          <div className="rounded-xl bg-[#1E73FF]/10 border border-[#1E73FF]/30 p-4">
+            <p className="text-xs text-[#1E73FF] mb-1">Batch Total ({batchQuantity} units)</p>
             <p className="text-2xl font-bold text-white">AUD {batchTotal.toFixed(2)}</p>
             <p className="text-[10px] text-slate-600 mt-1">Before discount</p>
           </div>

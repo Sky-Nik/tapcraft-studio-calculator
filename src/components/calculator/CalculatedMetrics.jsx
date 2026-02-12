@@ -11,12 +11,12 @@ const MetricCard = ({ icon: Icon, label, value, accent, delay, highlighted }) =>
     className={cn(
       "rounded-xl p-4",
       highlighted
-        ? "bg-gradient-to-br from-violet-500/15 to-indigo-500/10 border border-violet-500/20"
+        ? "bg-gradient-to-br from-[#1E73FF]/15 to-[#0056D6]/10 border border-[#1E73FF]/20"
         : "bg-slate-800/50 border border-white/[0.06]"
     )}
   >
     <div className="flex items-center gap-2 mb-2">
-      <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", highlighted ? "bg-violet-500/20" : "bg-white/[0.05]")}>
+      <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", highlighted ? "bg-[#1E73FF]/20" : "bg-white/[0.05]")}>
         <Icon className={cn("w-3.5 h-3.5", accent)} />
       </div>
       <span className="text-[11px] text-slate-500 font-medium">{label}</span>

@@ -17,10 +17,10 @@ export const DEFAULT_SETTINGS = {
 };
 
 export const MARGIN_TIERS = [
-  { label: "Competitive", margin: 25, color: "from-emerald-500 to-teal-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20", text: "text-emerald-400" },
-  { label: "Standard", margin: 40, color: "from-blue-500 to-cyan-500", bg: "bg-blue-500/10", border: "border-blue-500/20", text: "text-blue-400" },
-  { label: "Premium", margin: 60, color: "from-violet-500 to-purple-500", bg: "bg-violet-500/10", border: "border-violet-500/20", text: "text-violet-400" },
-  { label: "Luxury", margin: 80, color: "from-amber-500 to-orange-500", bg: "bg-amber-500/10", border: "border-amber-500/20", text: "text-amber-400" },
+  { label: "Competitive", margin: 25, color: "from-[#1E73FF] to-[#0056D6]", bg: "bg-[#1E73FF]/10", border: "border-[#1E73FF]/20", text: "text-[#4A9AFF]" },
+  { label: "Standard", margin: 40, color: "from-[#1E73FF] to-[#0056D6]", bg: "bg-[#1E73FF]/10", border: "border-[#1E73FF]/20", text: "text-[#1E73FF]" },
+  { label: "Premium", margin: 60, color: "from-[#1E73FF] to-[#0056D6]", bg: "bg-[#1E73FF]/10", border: "border-[#1E73FF]/20", text: "text-[#1E73FF]" },
+  { label: "Luxury", margin: 80, color: "from-[#1E73FF] to-[#0056D6]", bg: "bg-[#1E73FF]/10", border: "border-[#1E73FF]/20", text: "text-[#1E73FF]" },
 ];
 
 export function calculateCosts(inputs, settings = DEFAULT_SETTINGS) {
