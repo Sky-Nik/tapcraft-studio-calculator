@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 
-export default function QuoteActions({ inputs, costs, advancedSettings, customMargin }) {
+export default function QuoteActions({ inputs, costs, advancedSettings, customMargin, filamentTypes = [] }) {
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -41,10 +41,20 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
     const customPrice = costs.totalCost / (1 - customMargin / 100);
     const customPriceVat = customPrice * (1 + (advancedSettings.vatPercent || 15) / 100);
 
+    // Get unique materials from filament rows
+    const materials = [...new Set(
+      inputs.filamentRows?.map(row => {
+        const filament = filamentTypes.find(f => f.id === row.filamentId);
+        return filament?.material;
+      }).filter(Boolean)
+    )];
+    const filamentMaterial = materials.join(", ") || "";
+
     await base44.entities.Quote.create({
       part_name: inputs.partName || "Untitled Part",
+      category: inputs.category || "",
       printer_profile: inputs.printerProfile || "",
-      filament_type: inputs.filamentType || "",
+      filament_type: filamentMaterial,
       material_weight_g: inputs.materialWeightG || 0,
       print_time_minutes: (inputs.printTimeHours || 0) * 60 + (inputs.printTimeMinutes || 0),
       labor_time_minutes: inputs.laborTimeMinutes || 0,

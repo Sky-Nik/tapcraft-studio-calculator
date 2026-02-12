@@ -15,6 +15,7 @@ import { calculateCosts, DEFAULT_SETTINGS } from "../components/calculator/prici
 export default function Calculator() {
   const [inputs, setInputs] = useState({
     partName: "",
+    category: "",
     printerProfile: "",
     filamentRows: [],
     printTimeHours: 0,
@@ -170,6 +171,7 @@ export default function Calculator() {
           costs={costs}
           advancedSettings={advancedSettings}
           customMargin={customMargin}
+          filamentTypes={filamentTypes}
         />
       </div>
     </div>

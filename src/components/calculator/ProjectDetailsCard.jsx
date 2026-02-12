@@ -107,6 +107,15 @@ export default function ProjectDetailsCard({
             />
           </FieldWithTooltip>
 
+          <FieldWithTooltip label="Category" tooltip="Product category or type">
+            <Input
+              className={inputClass}
+              placeholder="e.g., Home Decor, Accessories"
+              value={inputs.category || ""}
+              onChange={(e) => handleInput("category", e.target.value)}
+            />
+          </FieldWithTooltip>
+
           <FieldWithTooltip label="Printer Profile" tooltip="Select which printer will be used">
             <Select value={inputs.printerProfile} onValueChange={(v) => handleInput("printerProfile", v)}>
               <SelectTrigger className={inputClass}>
