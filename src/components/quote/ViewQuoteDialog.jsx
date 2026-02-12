@@ -75,7 +75,7 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
           <div className="flex justify-between items-start mb-8 pb-6 border-b-2 border-gray-200">
             <div>
               {company.logo_url && (
-                <img src={company.logo_url} alt="Company Logo" className="h-16 mb-3" crossOrigin="anonymous" />
+                <img src={company.logo_url} alt="Company Logo" className="h-24 mb-3" crossOrigin="anonymous" />
               )}
               <h1 className="text-2xl font-bold text-gray-900">{company.company_name || "TapCraft Studio"}</h1>
               {company.address && <p className="text-sm text-gray-600 mt-1">{company.address}</p>}
