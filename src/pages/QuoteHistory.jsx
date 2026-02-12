@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Trash2, FileText, Filter } from "lucide-react";
+import { Search, Trash2, FileText, Filter, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import ViewQuoteDialog from "../components/quote/ViewQuoteDialog";
 
 const statusColors = {
   draft: "bg-slate-500/15 text-slate-400 border-slate-500/20",
@@ -21,11 +22,20 @@ const statusColors = {
 export default function QuoteHistory() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [viewingQuote, setViewingQuote] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: quotes = [], isLoading } = useQuery({
     queryKey: ["quotes"],
     queryFn: () => base44.entities.Quote.list("-created_date", 100),
+  });
+
+  const { data: companySettings } = useQuery({
+    queryKey: ['companySettings'],
+    queryFn: async () => {
+      const settings = await base44.entities.CompanySettings.list();
+      return settings[0] || null;
+    },
   });
 
   const deleteMutation = useMutation({
@@ -91,7 +101,7 @@ export default function QuoteHistory() {
                 <TableHead className="text-slate-500 font-medium text-xs">Margin</TableHead>
                 <TableHead className="text-slate-500 font-medium text-xs">Status</TableHead>
                 <TableHead className="text-slate-500 font-medium text-xs">Date</TableHead>
-                <TableHead className="text-slate-500 font-medium text-xs w-20"></TableHead>
+                <TableHead className="text-slate-500 font-medium text-xs w-28"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -124,14 +134,24 @@ export default function QuoteHistory() {
                     {q.created_date ? format(new Date(q.created_date), "MMM d, yyyy") : "—"}
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-slate-600 hover:text-red-400 hover:bg-red-500/10 w-8 h-8 rounded-lg"
-                      onClick={() => deleteMutation.mutate(q.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-[#1E73FF] hover:text-[#4A9AFF] hover:bg-[#1E73FF]/10 w-8 h-8 rounded-lg"
+                        onClick={() => setViewingQuote(q)}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-slate-600 hover:text-red-400 hover:bg-red-500/10 w-8 h-8 rounded-lg"
+                        onClick={() => deleteMutation.mutate(q.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -147,6 +167,13 @@ export default function QuoteHistory() {
           </Table>
         </div>
       </motion.div>
+
+      <ViewQuoteDialog
+        quote={viewingQuote}
+        companySettings={companySettings}
+        open={!!viewingQuote}
+        onClose={() => setViewingQuote(null)}
+      />
     </div>
   );
 }
