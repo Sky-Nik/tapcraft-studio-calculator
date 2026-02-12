@@ -56,13 +56,11 @@ export default function Sidebar({ currentPage }) {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="px-5 py-6 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
-          <Hexagon className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <h1 className="text-base font-bold text-white tracking-tight">PrintForge</h1>
-          <p className="text-[10px] text-slate-500 font-medium uppercase tracking-widest">Quotation Studio</p>
-        </div>
+        <img 
+          src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698d47eb6dec73f9ccb7c740/2332d6cb8_ChatGPTImageFeb1202607_32_12PM.png"
+          alt="TapCraft Studio"
+          className="h-8 object-contain"
+        />
       </div>
 
       {/* Nav */}
