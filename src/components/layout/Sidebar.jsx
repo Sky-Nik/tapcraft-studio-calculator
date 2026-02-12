@@ -57,10 +57,13 @@ export default function Sidebar({ currentPage }) {
       {/* Logo */}
       <div className="px-5 py-6 flex items-center gap-3">
         <img 
-          src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698d47eb6dec73f9ccb7c740/2332d6cb8_ChatGPTImageFeb1202607_32_12PM.png"
+          src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/698d47eb6dec73f9ccb7c740/e920f8043_22.png"
           alt="TapCraft Studio"
-          className="h-8 object-contain"
+          className="w-8 h-8 object-contain flex-shrink-0"
         />
+        <div>
+          <h1 className="text-base font-bold text-white tracking-tight">TapCraft Studio</h1>
+        </div>
       </div>
 
       {/* Nav */}
