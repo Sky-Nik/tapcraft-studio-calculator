@@ -13,6 +13,7 @@ import CalculatedMetrics from "../components/calculator/CalculatedMetrics";
 import { calculateCosts, DEFAULT_SETTINGS } from "../components/calculator/pricingEngine";
 
 export default function Calculator() {
+  const [editingQuoteId, setEditingQuoteId] = useState(null);
   const [inputs, setInputs] = useState({
     partName: "",
     category: "",
@@ -31,6 +32,39 @@ export default function Calculator() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [customMargin, setCustomMargin] = useState(40);
   const [batchDiscount, setBatchDiscount] = useState(0);
+
+  // Check for edit mode on mount
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit');
+    const quoteData = urlParams.get('data');
+    
+    if (editId && quoteData) {
+      try {
+        const quote = JSON.parse(decodeURIComponent(quoteData));
+        setEditingQuoteId(editId);
+        setInputs({
+          partName: quote.part_name || "",
+          category: quote.category || "",
+          printerProfile: quote.printer_profile || "",
+          filamentRows: [],
+          printTimeHours: Math.floor((quote.print_time_minutes || 0) / 60),
+          printTimeMinutes: (quote.print_time_minutes || 0) % 60,
+          laborTimeMinutes: quote.labor_time_minutes || 0,
+          selectedHardware: [],
+          selectedPackaging: [],
+          batchEnabled: (quote.batch_quantity || 1) > 1,
+          batchQuantity: quote.batch_quantity || 1,
+        });
+        setCustomMargin(quote.selected_margin || 40);
+        if (quote.vat_percent !== undefined) {
+          setAdvancedSettings(prev => ({ ...prev, vatPercent: quote.vat_percent }));
+        }
+      } catch (err) {
+        console.error('Failed to load quote for editing:', err);
+      }
+    }
+  }, []);
 
   const { data: printerProfiles = [] } = useQuery({
     queryKey: ["printerProfiles"],
@@ -172,6 +206,7 @@ export default function Calculator() {
           advancedSettings={advancedSettings}
           customMargin={customMargin}
           filamentTypes={filamentTypes}
+          editingQuoteId={editingQuoteId}
         />
       </div>
     </div>

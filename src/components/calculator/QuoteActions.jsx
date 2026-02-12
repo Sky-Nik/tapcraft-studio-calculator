@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 
-export default function QuoteActions({ inputs, costs, advancedSettings, customMargin, filamentTypes = [] }) {
+export default function QuoteActions({ inputs, costs, advancedSettings, customMargin, filamentTypes = [], editingQuoteId = null }) {
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -53,7 +53,7 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
     // Calculate total material weight from filament rows
     const totalMaterialWeight = inputs.filamentRows?.reduce((sum, row) => sum + (row.usage || 0), 0) || 0;
 
-    await base44.entities.Quote.create({
+    const quoteData = {
       part_name: inputs.partName || "Untitled Part",
       category: inputs.category || "",
       printer_profile: inputs.printerProfile || "",
@@ -74,10 +74,17 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
       final_price: customPrice,
       final_price_with_vat: customPriceVat,
       status: "draft",
-    });
+    };
+
+    if (editingQuoteId) {
+      await base44.entities.Quote.update(editingQuoteId, quoteData);
+      toast.success("Quote updated successfully");
+    } else {
+      await base44.entities.Quote.create(quoteData);
+      toast.success("Quote saved successfully");
+    }
 
     setSaving(false);
-    toast.success("Quote saved successfully");
   };
 
   return (
@@ -100,7 +107,7 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
         className="flex-1 bg-gradient-to-r from-[#1E73FF] to-[#0056D6] hover:from-[#4A9AFF] hover:to-[#1E73FF] text-white rounded-xl h-11 shadow-lg shadow-[#1E73FF]/20"
       >
         <Save className="w-4 h-4 mr-2" />
-        {saving ? "Saving..." : "Save Quote"}
+        {saving ? "Saving..." : editingQuoteId ? "Update Quote" : "Save Quote"}
       </Button>
     </motion.div>
   );
