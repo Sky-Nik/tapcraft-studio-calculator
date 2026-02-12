@@ -32,7 +32,7 @@ export default function CalculatedMetrics({ costs, advancedSettings, totalInvest
   
   // Calculate metrics
   const printerCost = s.printerCost || 0;
-  const annualCost = (s.annualMaintenance || 0);
+  const annualCost = s.annualMaintenance || 0;
   const lifetimeCost = printerCost + (annualCost * (s.estimatedLifeYears || 5));
   const estimatedUptimeHrs = ((s.uptimePercent || 70) / 100) * 365 * 24 * (s.estimatedLifeYears || 5);
   
