@@ -39,10 +39,10 @@ export default function Hardware() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["hardware"] }); toast.success("Deleted"); },
   });
 
-  const resetForm = () => { setForm({ name: "", category: "bolts", unit_cost: 0, stock_quantity: 0 }); setEditId(null); };
+  const resetForm = () => { setForm({ name: "", category: "bolts", custom_type: "", unit_cost: 0, stock_quantity: 0 }); setEditId(null); };
 
   const handleEdit = (item) => {
-    setForm({ name: item.name, category: item.category || "bolts", unit_cost: item.unit_cost || 0, stock_quantity: item.stock_quantity || 0 });
+    setForm({ name: item.name, category: item.category || "bolts", custom_type: item.custom_type || "", unit_cost: item.unit_cost || 0, stock_quantity: item.stock_quantity || 0 });
     setEditId(item.id);
     setOpen(true);
   };
@@ -74,6 +74,7 @@ export default function Hardware() {
                   </SelectContent>
                 </Select>
               </div>
+              <div><Label className="text-xs text-slate-400">Custom Type</Label><Input placeholder="e.g., M3 x 10mm" className={inputClass} value={form.custom_type} onChange={(e) => setForm({ ...form, custom_type: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label className="text-xs text-slate-400">Unit Cost ($)</Label><Input type="number" step="0.01" className={inputClass} value={form.unit_cost || ""} onChange={(e) => setForm({ ...form, unit_cost: parseFloat(e.target.value) || 0 })} /></div>
                 <div><Label className="text-xs text-slate-400">Stock Qty</Label><Input type="number" className={inputClass} value={form.stock_quantity || ""} onChange={(e) => setForm({ ...form, stock_quantity: parseInt(e.target.value) || 0 })} /></div>
@@ -90,6 +91,7 @@ export default function Hardware() {
             <TableRow className="border-white/[0.06] hover:bg-transparent">
               <TableHead className="text-slate-500 text-xs">Name</TableHead>
               <TableHead className="text-slate-500 text-xs">Category</TableHead>
+              <TableHead className="text-slate-500 text-xs">Custom Type</TableHead>
               <TableHead className="text-slate-500 text-xs">Unit Cost</TableHead>
               <TableHead className="text-slate-500 text-xs">Stock</TableHead>
               <TableHead className="text-slate-500 text-xs w-24"></TableHead>
@@ -100,6 +102,7 @@ export default function Hardware() {
               <TableRow key={item.id} className="border-white/[0.04] hover:bg-white/[0.02]">
                 <TableCell className="text-slate-200 font-medium">{item.name}</TableCell>
                 <TableCell className="text-slate-400 text-sm capitalize">{item.category}</TableCell>
+                <TableCell className="text-slate-400 text-sm">{item.custom_type || "—"}</TableCell>
                 <TableCell className="text-slate-300">${(item.unit_cost || 0).toFixed(2)}</TableCell>
                 <TableCell className="text-slate-400">{item.stock_quantity || 0}</TableCell>
                 <TableCell>
@@ -111,7 +114,7 @@ export default function Hardware() {
               </TableRow>
             ))}
             {items.length === 0 && (
-              <TableRow><TableCell colSpan={5} className="text-center py-10"><HardDrive className="w-6 h-6 text-slate-700 mx-auto mb-2" /><p className="text-xs text-slate-600">No hardware items</p></TableCell></TableRow>
+              <TableRow><TableCell colSpan={6} className="text-center py-10"><HardDrive className="w-6 h-6 text-slate-700 mx-auto mb-2" /><p className="text-xs text-slate-600">No hardware items</p></TableCell></TableRow>
             )}
           </TableBody>
         </Table>

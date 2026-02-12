@@ -4,12 +4,14 @@ import { base44 } from "@/api/base44Client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Plus, Download, Trash2 } from "lucide-react";
+import { AlertCircle, Plus, Download, Trash2, Edit2 } from "lucide-react";
 import { toast } from "sonner";
 import AddItemDialog from "./AddItemDialog";
+import EditStockDialog from "./EditStockDialog";
 
 export default function ProductInventory() {
   const [showAdd, setShowAdd] = useState(false);
+  const [editingStock, setEditingStock] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: products = [] } = useQuery({
@@ -35,6 +37,14 @@ export default function ProductInventory() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       toast.success("Product removed");
+    },
+  });
+
+  const updateStockMutation = useMutation({
+    mutationFn: ({ id, stock_quantity }) => base44.entities.Product.update(id, { stock_quantity }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast.success("Stock updated");
     },
   });
 
@@ -107,9 +117,14 @@ export default function ProductInventory() {
                 </div>
               </TableCell>
               <TableCell>
-                <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(p.id)} className="text-red-400 hover:text-red-300 hover:bg-red-500/10">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+                <div className="flex gap-1">
+                  <Button variant="ghost" size="icon" onClick={() => setEditingStock(p)} className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10">
+                    <Edit2 className="w-4 h-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(p.id)} className="text-red-400 hover:text-red-300 hover:bg-red-500/10">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}
@@ -117,6 +132,13 @@ export default function ProductInventory() {
       </Table>
     </div>
     <AddItemDialog open={showAdd} onClose={() => setShowAdd(false)} onSave={(data) => addMutation.mutate(data)} type="product" />
+    <EditStockDialog 
+      open={!!editingStock} 
+      onClose={() => setEditingStock(null)} 
+      onSave={(stock_quantity) => updateStockMutation.mutate({ id: editingStock.id, stock_quantity })} 
+      item={editingStock} 
+      itemType="product" 
+    />
     </>
   );
 }
