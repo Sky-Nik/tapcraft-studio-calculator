@@ -21,7 +21,7 @@ export default function Calculator() {
     printTimeHours: 0,
     printTimeMinutes: 0,
     laborTimeMinutes: 0,
-    hardwareCost: 0,
+    selectedHardware: [],
     packagingCost: 0,
     batchEnabled: false,
     batchQuantity: 1,
@@ -41,10 +41,23 @@ export default function Calculator() {
     queryFn: () => base44.entities.FilamentType.list(),
   });
 
+  const { data: hardwareItems = [] } = useQuery({
+    queryKey: ["hardwareItems"],
+    queryFn: () => base44.entities.HardwareItem.list(),
+  });
+
+  // Calculate total hardware cost from selected items
+  const totalHardwareCost = useMemo(() => {
+    return inputs.selectedHardware.reduce((total, hwId) => {
+      const item = hardwareItems.find(h => h.id === hwId);
+      return total + (item?.unit_cost || 0);
+    }, 0);
+  }, [inputs.selectedHardware, hardwareItems]);
+
   // Real-time cost calculation
   const costs = useMemo(() => {
-    return calculateCosts(inputs, advancedSettings);
-  }, [inputs, advancedSettings]);
+    return calculateCosts({ ...inputs, hardwareCost: totalHardwareCost }, advancedSettings);
+  }, [inputs, advancedSettings, totalHardwareCost]);
 
   const batchQty = inputs.batchEnabled ? inputs.batchQuantity : 1;
 
@@ -61,6 +74,8 @@ export default function Calculator() {
           setShowAdvanced={setShowAdvanced}
           printerProfiles={printerProfiles}
           filamentTypes={filamentTypes}
+          hardwareItems={hardwareItems}
+          totalHardwareCost={totalHardwareCost}
         />
       </div>
 
