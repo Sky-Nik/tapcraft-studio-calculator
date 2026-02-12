@@ -31,8 +31,11 @@ export function calculateCosts(inputs, settings = DEFAULT_SETTINGS) {
     laborTimeMinutes = 0,
     hardwareCost = 0,
     packagingCost = 0,
+    batchEnabled = false,
     batchQuantity = 1,
   } = inputs;
+
+  const effectiveBatchQty = batchEnabled ? batchQuantity : 1;
 
   const s = { ...DEFAULT_SETTINGS, ...settings };
 
@@ -66,7 +69,7 @@ export function calculateCosts(inputs, settings = DEFAULT_SETTINGS) {
   const unitBaseCost = (materialCost + laborCost + machineCost + hardwareCost + packagingCost) * s.bufferFactor;
 
   // Batch total cost
-  const batchBaseCost = unitBaseCost * batchQuantity;
+  const batchBaseCost = unitBaseCost * effectiveBatchQty;
 
   // Calculate pricing tiers (CORRECTED BATCH LOGIC)
   const pricingTiers = MARGIN_TIERS.map((tier) => {
@@ -74,7 +77,7 @@ export function calculateCosts(inputs, settings = DEFAULT_SETTINGS) {
     const subtotalWithProfit = batchBaseCost + profit;
     const vat = (s.vatPercent / 100) * subtotalWithProfit;
     const grandTotal = subtotalWithProfit + vat;
-    const unitSellPrice = grandTotal / batchQuantity;
+    const unitSellPrice = grandTotal / effectiveBatchQty;
     
     return {
       ...tier,
