@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Trash2, FileText, Filter, Eye } from "lucide-react";
+import { Search, Trash2, FileText, Filter, Eye, Edit } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import ViewQuoteDialog from "../components/quote/ViewQuoteDialog";
@@ -165,6 +166,7 @@ export default function QuoteHistory() {
                     />
                   </TableCell>
                   <TableCell className="font-medium text-slate-200">{q.part_name || "—"}</TableCell>
+                  <TableCell className="text-slate-400 text-sm">{q.category || "—"}</TableCell>
                   <TableCell className="text-slate-400 text-sm">{q.filament_type || "—"}</TableCell>
                   <TableCell className="text-slate-400 text-sm">${(q.total_cost || 0).toFixed(2)}</TableCell>
                   <TableCell className="text-white font-medium">${(q.final_price || 0).toFixed(2)}</TableCell>
@@ -191,24 +193,35 @@ export default function QuoteHistory() {
                     {q.created_date ? format(new Date(q.created_date), "MMM d, yyyy") : "—"}
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-[#1E73FF] hover:text-[#4A9AFF] hover:bg-[#1E73FF]/10 w-8 h-8 rounded-lg"
-                        onClick={() => setViewingQuote(q)}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-slate-600 hover:text-red-400 hover:bg-red-500/10 w-8 h-8 rounded-lg"
-                        onClick={() => deleteMutation.mutate(q.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+                   <div className="flex gap-1">
+                     <Button
+                       variant="ghost"
+                       size="icon"
+                       className="text-[#1E73FF] hover:text-[#4A9AFF] hover:bg-[#1E73FF]/10 w-8 h-8 rounded-lg"
+                       onClick={() => setViewingQuote(q)}
+                     >
+                       <Eye className="w-4 h-4" />
+                     </Button>
+                     <Button
+                       variant="ghost"
+                       size="icon"
+                       className="text-green-400 hover:text-green-300 hover:bg-green-500/10 w-8 h-8 rounded-lg"
+                       onClick={() => {
+                         const quoteData = encodeURIComponent(JSON.stringify(q));
+                         window.location.href = createPageUrl('Calculator') + `?edit=${q.id}&data=${quoteData}`;
+                       }}
+                     >
+                       <Edit className="w-4 h-4" />
+                     </Button>
+                     <Button
+                       variant="ghost"
+                       size="icon"
+                       className="text-slate-600 hover:text-red-400 hover:bg-red-500/10 w-8 h-8 rounded-lg"
+                       onClick={() => deleteMutation.mutate(q.id)}
+                     >
+                       <Trash2 className="w-4 h-4" />
+                     </Button>
+                   </div>
                   </TableCell>
                 </TableRow>
               ))}
