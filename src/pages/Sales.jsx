@@ -9,13 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search, TrendingUp, DollarSign, Package, Trash2, Calendar, Edit2, FileText } from "lucide-react";
+import { Plus, Search, TrendingUp, DollarSign, Package, Trash2, Calendar, Edit2, FileText, Eye, Download } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Sales() {
   const [search, setSearch] = useState("");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingSale, setEditingSale] = useState(null);
+  const [viewingInvoice, setViewingInvoice] = useState(null);
   const [newSale, setNewSale] = useState({
     customer_name: "",
     customer_email: "",
@@ -300,10 +301,18 @@ export default function Sales() {
                     <Button
                       variant="ghost"
                       size="icon"
+                      onClick={() => setViewingInvoice(sale)}
+                      className="text-violet-400 hover:text-violet-300 hover:bg-violet-500/10"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => generateInvoice(sale)}
                       className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
                     >
-                      <FileText className="w-4 h-4" />
+                      <Download className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="ghost"
@@ -457,6 +466,92 @@ export default function Sales() {
               className="bg-gradient-to-r from-[#1E73FF] to-[#0056D6]"
             >
               {editingSale ? 'Update Sale' : 'Add Sale'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Invoice Preview Dialog */}
+      <Dialog open={!!viewingInvoice} onOpenChange={() => setViewingInvoice(null)}>
+        <DialogContent className="bg-white text-black max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-[#1E73FF]">Invoice Preview</DialogTitle>
+          </DialogHeader>
+          {viewingInvoice && (
+            <div className="space-y-6 p-6">
+              {companySettings?.logo_url && (
+                <img src={companySettings.logo_url} alt="Logo" className="h-20 mb-4" />
+              )}
+              <h1 className="text-3xl font-bold text-[#1E73FF]">INVOICE</h1>
+              
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-sm text-gray-600 mb-2">FROM</h3>
+                  <p className="font-bold text-lg">{companySettings?.company_name || 'Company Name'}</p>
+                  <p className="text-gray-600">{companySettings?.address || ''}</p>
+                  <p className="text-gray-600">{companySettings?.phone || ''}</p>
+                  <p className="text-gray-600">{companySettings?.email || ''}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm text-gray-600 mb-2">TO</h3>
+                  <p className="font-bold text-lg">{viewingInvoice.customer_name || 'Customer'}</p>
+                  <p className="text-gray-600">{viewingInvoice.customer_email || ''}</p>
+                  <p className="mt-4"><strong>Date:</strong> {viewingInvoice.sale_date ? new Date(viewingInvoice.sale_date).toLocaleDateString() : ''}</p>
+                  <p><strong>Invoice #:</strong> {viewingInvoice.id.substring(0, 8).toUpperCase()}</p>
+                </div>
+              </div>
+
+              <table className="w-full border-collapse mt-8">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="p-3 text-left border-b-2 border-gray-300">Product</th>
+                    <th className="p-3 text-center border-b-2 border-gray-300">Quantity</th>
+                    <th className="p-3 text-right border-b-2 border-gray-300">Unit Price</th>
+                    <th className="p-3 text-right border-b-2 border-gray-300">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="p-3 border-b border-gray-200">{viewingInvoice.product_name}</td>
+                    <td className="p-3 text-center border-b border-gray-200">{viewingInvoice.quantity}</td>
+                    <td className="p-3 text-right border-b border-gray-200">${viewingInvoice.unit_price?.toFixed(2)}</td>
+                    <td className="p-3 text-right border-b border-gray-200">${viewingInvoice.total_amount?.toFixed(2)}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div className="text-right mt-8">
+                <p className="text-3xl font-bold text-[#1E73FF]">Total: ${viewingInvoice.total_amount?.toFixed(2)}</p>
+                <p className="text-gray-600 mt-2">Status: {viewingInvoice.status}</p>
+                {viewingInvoice.payment_method && (
+                  <p className="text-gray-600">Payment Method: {viewingInvoice.payment_method}</p>
+                )}
+              </div>
+
+              {viewingInvoice.notes && (
+                <div className="mt-8 p-4 bg-blue-50 border-l-4 border-[#1E73FF]">
+                  <p className="text-gray-700"><strong>Notes:</strong> {viewingInvoice.notes}</p>
+                </div>
+              )}
+
+              {companySettings?.payment_info && (
+                <div className="mt-8 pt-6 border-t border-gray-300">
+                  <p className="text-sm text-gray-500">{companySettings.payment_info}</p>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewingInvoice(null)}>Close</Button>
+            <Button
+              onClick={() => {
+                generateInvoice(viewingInvoice);
+                setViewingInvoice(null);
+              }}
+              className="bg-gradient-to-r from-[#1E73FF] to-[#0056D6]"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download PDF
             </Button>
           </DialogFooter>
         </DialogContent>
