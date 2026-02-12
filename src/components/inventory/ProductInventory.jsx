@@ -1,19 +1,76 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertCircle, Plus, Download } from "lucide-react";
+import { toast } from "sonner";
+import AddItemDialog from "./AddItemDialog";
 
 export default function ProductInventory() {
+  const [showAdd, setShowAdd] = useState(false);
+  const queryClient = useQueryClient();
+
   const { data: products = [] } = useQuery({
     queryKey: ["products"],
     queryFn: () => base44.entities.Product.list(),
   });
 
+  const { data: quotes = [] } = useQuery({
+    queryKey: ["quotes"],
+    queryFn: () => base44.entities.Quote.list(),
+  });
+
+  const addMutation = useMutation({
+    mutationFn: (data) => base44.entities.Product.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast.success("Product added");
+    },
+  });
+
+  const importFromQuotes = async () => {
+    const uniqueParts = {};
+    quotes.forEach(q => {
+      if (q.part_name && !uniqueParts[q.part_name]) {
+        uniqueParts[q.part_name] = {
+          name: q.part_name,
+          sku: `SKU-${q.part_name.replace(/\s+/g, '-').toUpperCase()}`,
+          category: q.filament_type || "3D Printed",
+          cost: q.total_cost || 0,
+          price: q.final_price || 0,
+          stock_quantity: 0,
+          min_stock_level: 5,
+          notes: `Imported from quotation`
+        };
+      }
+    });
+
+    const items = Object.values(uniqueParts);
+    if (items.length > 0) {
+      await base44.entities.Product.bulkCreate(items);
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast.success(`Imported ${items.length} products from quotations`);
+    } else {
+      toast.error("No unique products found in quotations");
+    }
+  };
+
   return (
-    <div className="bg-[hsl(224,20%,9%)] rounded-2xl border border-white/[0.06] overflow-hidden">
-      <Table>
+    <>
+      <div className="flex justify-end gap-3 mb-4">
+        <Button onClick={importFromQuotes} variant="outline" className="border-[#1E73FF]/30 text-[#1E73FF] hover:bg-[#1E73FF]/10">
+          <Download className="w-4 h-4 mr-2" />
+          Import from Quotations
+        </Button>
+        <Button onClick={() => setShowAdd(true)} className="bg-gradient-to-r from-[#1E73FF] to-[#0056D6] hover:from-[#4A9AFF] hover:to-[#1E73FF]">
+          <Plus className="w-4 h-4 mr-2" />
+          Add Product
+        </Button>
+      </div>
+      <div className="bg-[hsl(224,20%,9%)] rounded-2xl border border-white/[0.06] overflow-hidden">
+        <Table>
         <TableHeader>
           <TableRow className="border-white/[0.06] hover:bg-transparent">
             <TableHead className="text-slate-500">Name</TableHead>
@@ -45,5 +102,7 @@ export default function ProductInventory() {
         </TableBody>
       </Table>
     </div>
+    <AddItemDialog open={showAdd} onClose={() => setShowAdd(false)} onSave={(data) => addMutation.mutate(data)} type="product" />
+    </>
   );
 }
