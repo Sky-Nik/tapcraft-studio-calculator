@@ -98,10 +98,10 @@ export default function Calculator() {
   // Real-time cost calculation
   const costs = useMemo(() => {
     return calculateCosts({ 
-      ...inputs, 
+      ...inputs,
+      filamentRows: enrichedFilamentRows,
       hardwareCost: totalHardwareCost,
-      packagingCost: totalPackagingCost,
-      filamentRows: enrichedFilamentRows 
+      packagingCost: totalPackagingCost
     }, advancedSettings);
   }, [inputs, advancedSettings, totalHardwareCost, totalPackagingCost, enrichedFilamentRows]);
 
