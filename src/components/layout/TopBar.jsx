@@ -22,6 +22,7 @@ const pageTitles = {
   Hardware: "Hardware Inventory",
   Packaging: "Packaging Inventory",
   Tools: "Tools",
+  UserManagement: "User Management",
   Settings: "Settings",
 };
 
@@ -35,6 +36,7 @@ const pageBreadcrumbs = {
   Hardware: ["Home", "Inventory", "Hardware"],
   Packaging: ["Home", "Inventory", "Packaging"],
   Tools: ["Home", "Tools"],
+  UserManagement: ["Home", "Users"],
   Settings: ["Home", "Settings"],
 };
 

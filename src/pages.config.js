@@ -59,6 +59,7 @@ import QuoteHistory from './pages/QuoteHistory';
 import Settings from './pages/Settings';
 import Tools from './pages/Tools';
 import Sales from './pages/Sales';
+import UserManagement from './pages/UserManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "Settings": Settings,
     "Tools": Tools,
     "Sales": Sales,
+    "UserManagement": UserManagement,
 }
 
 export const pagesConfig = {
