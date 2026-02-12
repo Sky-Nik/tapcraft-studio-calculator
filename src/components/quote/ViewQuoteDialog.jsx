@@ -170,32 +170,19 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
                   <td className="py-2 text-gray-600">Packaging Cost</td>
                   <td className="py-2 text-right font-semibold">AUD {quote.packaging_cost.toFixed(2)}</td>
                 </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="py-2 text-gray-600">VAT ({quote.vat_percent || 0}%)</td>
+                  <td className="py-2 text-right font-semibold">AUD {((quote.total_cost || 0) * ((quote.vat_percent || 0) / 100)).toFixed(2)}</td>
+                </tr>
                 <tr className="border-t-2 border-gray-300 font-bold">
-                  <td className="py-2">Total Cost</td>
-                  <td className="py-2 text-right">AUD {quote.total_cost.toFixed(2)}</td>
+                  <td className="py-2">Total Cost (incl. VAT)</td>
+                  <td className="py-2 text-right">AUD {((quote.total_cost || 0) * (1 + (quote.vat_percent || 0) / 100)).toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          {/* Pricing */}
-          <div className="mb-6 bg-blue-50 p-4 rounded-lg">
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Quoted Price</h3>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <p className="text-gray-600">Margin:</p>
-                <p className="font-semibold">{quote.selected_margin}%</p>
-              </div>
-              <div>
-                <p className="text-gray-600">Price (excl. VAT):</p>
-                <p className="font-semibold text-lg">AUD {quote.final_price.toFixed(2)}</p>
-              </div>
-              <div className="col-span-2">
-                <p className="text-gray-600">Final Price (incl. VAT):</p>
-                <p className="font-bold text-2xl text-[#1E73FF]">AUD {quote.final_price_with_vat.toFixed(2)}</p>
-              </div>
-            </div>
-          </div>
+
 
           {/* Footer with Payment Info and Social */}
           <div className="mt-8 pt-6 border-t-2 border-gray-200">

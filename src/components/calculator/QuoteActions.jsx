@@ -50,22 +50,26 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
     )];
     const filamentMaterial = materials.join(", ") || "";
 
+    // Calculate total material weight from filament rows
+    const totalMaterialWeight = inputs.filamentRows?.reduce((sum, row) => sum + (row.usage || 0), 0) || 0;
+
     await base44.entities.Quote.create({
       part_name: inputs.partName || "Untitled Part",
       category: inputs.category || "",
       printer_profile: inputs.printerProfile || "",
       filament_type: filamentMaterial,
-      material_weight_g: inputs.materialWeightG || 0,
+      material_weight_g: totalMaterialWeight,
       print_time_minutes: (inputs.printTimeHours || 0) * 60 + (inputs.printTimeMinutes || 0),
       labor_time_minutes: inputs.laborTimeMinutes || 0,
-      hardware_cost: inputs.hardwareCost || 0,
-      packaging_cost: inputs.packagingCost || 0,
+      hardware_cost: costs.hardwareCost || 0,
+      packaging_cost: costs.packagingCost || 0,
       batch_quantity: inputs.batchQuantity || 1,
       material_cost: costs.materialCost || 0,
       labor_cost: costs.laborCost || 0,
       machine_cost: costs.machineCost || 0,
       electricity_cost: costs.electricityCost || 0,
       total_cost: costs.totalCost || 0,
+      vat_percent: advancedSettings.vatPercent || 0,
       selected_margin: customMargin,
       final_price: customPrice,
       final_price_with_vat: customPriceVat,
