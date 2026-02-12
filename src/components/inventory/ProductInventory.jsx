@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Plus, Download, Trash2, Edit2 } from "lucide-react";
+import { AlertCircle, Plus, Download, Trash2, Edit2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import AddItemDialog from "./AddItemDialog";
 import EditStockDialog from "./EditStockDialog";
@@ -12,6 +12,7 @@ import EditStockDialog from "./EditStockDialog";
 export default function ProductInventory() {
   const [showAdd, setShowAdd] = useState(false);
   const [editingStock, setEditingStock] = useState(null);
+  const [syncing, setSyncing] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: products = [] } = useQuery({
@@ -75,9 +76,35 @@ export default function ProductInventory() {
     }
   };
 
+  const syncWithShopify = async () => {
+    setSyncing(true);
+    try {
+      const response = await base44.functions.invoke('syncShopifyProducts');
+      if (response.data.success) {
+        queryClient.invalidateQueries({ queryKey: ["products"] });
+        toast.success(`Synced ${response.data.synced} products (${response.data.created} new, ${response.data.updated} updated)`);
+      } else {
+        toast.error(response.data.error || 'Sync failed');
+      }
+    } catch (error) {
+      toast.error("Failed to sync with Shopify");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   return (
     <>
       <div className="flex justify-end gap-3 mb-4">
+        <Button 
+          onClick={syncWithShopify} 
+          disabled={syncing}
+          variant="outline" 
+          className="border-green-500/30 text-green-400 hover:bg-green-500/10"
+        >
+          <RefreshCw className={`w-4 h-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
+          {syncing ? 'Syncing...' : 'Sync Shopify'}
+        </Button>
         <Button onClick={importFromQuotes} variant="outline" className="border-[#1E73FF]/30 text-[#1E73FF] hover:bg-[#1E73FF]/10">
           <Download className="w-4 h-4 mr-2" />
           Import from Quotations
