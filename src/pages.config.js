@@ -47,13 +47,32 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import Calculator from './pages/Calculator';
+import Dashboard from './pages/Dashboard';
+import QuoteHistory from './pages/QuoteHistory';
+import Filaments from './pages/Filaments';
+import Printers from './pages/Printers';
+import Hardware from './pages/Hardware';
+import Packaging from './pages/Packaging';
+import Tools from './pages/Tools';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "Calculator": Calculator,
+    "Dashboard": Dashboard,
+    "QuoteHistory": QuoteHistory,
+    "Filaments": Filaments,
+    "Printers": Printers,
+    "Hardware": Hardware,
+    "Packaging": Packaging,
+    "Tools": Tools,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
+    mainPage: "Calculator",
     Pages: PAGES,
     Layout: __Layout,
 };
