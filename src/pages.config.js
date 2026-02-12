@@ -57,6 +57,7 @@ import Printers from './pages/Printers';
 import QuoteHistory from './pages/QuoteHistory';
 import Settings from './pages/Settings';
 import Tools from './pages/Tools';
+import InventoryManager from './pages/InventoryManager';
 import __Layout from './Layout.jsx';
 
 
@@ -71,6 +72,7 @@ export const PAGES = {
     "QuoteHistory": QuoteHistory,
     "Settings": Settings,
     "Tools": Tools,
+    "InventoryManager": InventoryManager,
 }
 
 export const pagesConfig = {

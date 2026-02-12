@@ -23,6 +23,7 @@ export default function QuoteHistory() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewingQuote, setViewingQuote] = useState(null);
+  const [selectedQuotes, setSelectedQuotes] = useState([]);
   const queryClient = useQueryClient();
 
   const { data: quotes = [], isLoading } = useQuery({
@@ -60,11 +61,51 @@ export default function QuoteHistory() {
     return matchSearch && matchStatus;
   });
 
+  const handleCombineQuotes = () => {
+    if (selectedQuotes.length < 2) {
+      toast.error("Select at least 2 quotes to combine");
+      return;
+    }
+
+    const quotesToCombine = quotes.filter(q => selectedQuotes.includes(q.id));
+    const combined = {
+      part_name: quotesToCombine.map(q => q.part_name).join(", "),
+      parts: quotesToCombine.map(q => ({
+        name: q.part_name,
+        material: q.filament_type,
+        weight: q.material_weight_g,
+        quantity: q.batch_quantity || 1
+      })),
+      material_cost: quotesToCombine.reduce((sum, q) => sum + (q.material_cost || 0), 0),
+      labor_cost: quotesToCombine.reduce((sum, q) => sum + (q.labor_cost || 0), 0),
+      machine_cost: quotesToCombine.reduce((sum, q) => sum + (q.machine_cost || 0), 0),
+      electricity_cost: quotesToCombine.reduce((sum, q) => sum + (q.electricity_cost || 0), 0),
+      hardware_cost: quotesToCombine.reduce((sum, q) => sum + (q.hardware_cost || 0), 0),
+      packaging_cost: quotesToCombine.reduce((sum, q) => sum + (q.packaging_cost || 0), 0),
+      total_cost: quotesToCombine.reduce((sum, q) => sum + (q.total_cost || 0), 0),
+      final_price: quotesToCombine.reduce((sum, q) => sum + (q.final_price || 0), 0),
+      final_price_with_vat: quotesToCombine.reduce((sum, q) => sum + (q.final_price_with_vat || 0), 0),
+      selected_margin: Math.round(quotesToCombine.reduce((sum, q) => sum + (q.selected_margin || 0), 0) / quotesToCombine.length),
+      status: "draft",
+      combined: true
+    };
+
+    setViewingQuote(combined);
+  };
+
   return (
     <div className="max-w-[1400px] mx-auto space-y-6">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        {/* Filters */}
+        {/* Filters & Actions */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          {selectedQuotes.length > 0 && (
+            <Button
+              onClick={handleCombineQuotes}
+              className="bg-gradient-to-r from-[#1E73FF] to-[#0056D6] hover:from-[#4A9AFF] hover:to-[#1E73FF]"
+            >
+              Combine {selectedQuotes.length} Quotes
+            </Button>
+          )}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <Input
@@ -94,6 +135,7 @@ export default function QuoteHistory() {
           <Table>
             <TableHeader>
               <TableRow className="border-white/[0.06] hover:bg-transparent">
+                <TableHead className="text-slate-500 font-medium text-xs w-12"></TableHead>
                 <TableHead className="text-slate-500 font-medium text-xs">Part Name</TableHead>
                 <TableHead className="text-slate-500 font-medium text-xs">Material</TableHead>
                 <TableHead className="text-slate-500 font-medium text-xs">Total Cost</TableHead>
@@ -107,6 +149,20 @@ export default function QuoteHistory() {
             <TableBody>
               {filtered.map((q) => (
                 <TableRow key={q.id} className="border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                  <TableCell>
+                    <input
+                      type="checkbox"
+                      checked={selectedQuotes.includes(q.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedQuotes([...selectedQuotes, q.id]);
+                        } else {
+                          setSelectedQuotes(selectedQuotes.filter(id => id !== q.id));
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-slate-600 bg-slate-700"
+                    />
+                  </TableCell>
                   <TableCell className="font-medium text-slate-200">{q.part_name || "—"}</TableCell>
                   <TableCell className="text-slate-400 text-sm">{q.filament_type || "—"}</TableCell>
                   <TableCell className="text-slate-400 text-sm">${(q.total_cost || 0).toFixed(2)}</TableCell>
@@ -157,7 +213,7 @@ export default function QuoteHistory() {
               ))}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12">
+                  <TableCell colSpan={9} className="text-center py-12">
                     <FileText className="w-8 h-8 text-slate-700 mx-auto mb-2" />
                     <p className="text-sm text-slate-600">No quotes found</p>
                   </TableCell>

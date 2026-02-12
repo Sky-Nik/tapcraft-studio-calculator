@@ -105,31 +105,44 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
 
           {/* Part Details */}
           <div className="mb-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-3 pb-2 border-b border-gray-300">Part Details</h3>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <p className="text-gray-600">Part Name:</p>
-                <p className="font-semibold">{quote.part_name}</p>
+            <h3 className="text-xl font-bold text-gray-900 mb-3 pb-2 border-b border-gray-300">
+              {quote.combined ? "Combined Parts" : "Part Details"}
+            </h3>
+            {quote.combined ? (
+              <div className="space-y-2">
+                {quote.parts?.map((part, idx) => (
+                  <div key={idx} className="flex justify-between text-sm p-2 bg-gray-50 rounded">
+                    <span className="font-semibold">{part.name}</span>
+                    <span className="text-gray-600">{part.material} • {part.weight}g • Qty: {part.quantity}</span>
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="text-gray-600">Material:</p>
-                <p className="font-semibold">{quote.filament_type}</p>
-              </div>
-              <div>
-                <p className="text-gray-600">Material Weight:</p>
-                <p className="font-semibold">{quote.material_weight_g}g</p>
-              </div>
-              <div>
-                <p className="text-gray-600">Print Time:</p>
-                <p className="font-semibold">{Math.floor(quote.print_time_minutes / 60)}h {quote.print_time_minutes % 60}m</p>
-              </div>
-              {quote.batch_quantity > 1 && (
+            ) : (
+              <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <p className="text-gray-600">Batch Quantity:</p>
-                  <p className="font-semibold">{quote.batch_quantity} units</p>
+                  <p className="text-gray-600">Part Name:</p>
+                  <p className="font-semibold">{quote.part_name}</p>
                 </div>
-              )}
-            </div>
+                <div>
+                  <p className="text-gray-600">Material:</p>
+                  <p className="font-semibold">{quote.filament_type}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Material Weight:</p>
+                  <p className="font-semibold">{quote.material_weight_g}g</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Print Time:</p>
+                  <p className="font-semibold">{Math.floor(quote.print_time_minutes / 60)}h {quote.print_time_minutes % 60}m</p>
+                </div>
+                {quote.batch_quantity > 1 && (
+                  <div>
+                    <p className="text-gray-600">Batch Quantity:</p>
+                    <p className="font-semibold">{quote.batch_quantity} units</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Cost Breakdown */}
