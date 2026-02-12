@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Plus, Download } from "lucide-react";
+import { AlertCircle, Plus, Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import AddItemDialog from "./AddItemDialog";
 
@@ -27,6 +27,14 @@ export default function ProductInventory() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       toast.success("Product added");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Product.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      toast.success("Product removed");
     },
   });
 
@@ -79,6 +87,7 @@ export default function ProductInventory() {
             <TableHead className="text-slate-500">Cost</TableHead>
             <TableHead className="text-slate-500">Price</TableHead>
             <TableHead className="text-slate-500">Stock</TableHead>
+            <TableHead className="text-slate-500"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -96,6 +105,11 @@ export default function ProductInventory() {
                     <AlertCircle className="w-4 h-4 text-amber-500" />
                   )}
                 </div>
+              </TableCell>
+              <TableCell>
+                <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(p.id)} className="text-red-400 hover:text-red-300 hover:bg-red-500/10">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
               </TableCell>
             </TableRow>
           ))}

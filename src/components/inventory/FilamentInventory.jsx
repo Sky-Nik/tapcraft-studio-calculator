@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import AddItemDialog from "./AddItemDialog";
 
@@ -22,6 +22,14 @@ export default function FilamentInventory() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["filaments"] });
       toast.success("Filament added");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.FilamentType.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["filaments"] });
+      toast.success("Filament removed");
     },
   });
 
@@ -43,6 +51,7 @@ export default function FilamentInventory() {
             <TableHead className="text-slate-500">Brand</TableHead>
             <TableHead className="text-slate-500">Cost/kg</TableHead>
             <TableHead className="text-slate-500">Stock (kg)</TableHead>
+            <TableHead className="text-slate-500"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -58,6 +67,11 @@ export default function FilamentInventory() {
                   <span className="text-white">{f.stock_kg || 0} kg</span>
                   {f.stock_kg < 1 && <AlertCircle className="w-4 h-4 text-amber-500" />}
                 </div>
+              </TableCell>
+              <TableCell>
+                <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(f.id)} className="text-red-400 hover:text-red-300 hover:bg-red-500/10">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
               </TableCell>
             </TableRow>
           ))}

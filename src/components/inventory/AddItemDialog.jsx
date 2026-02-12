@@ -60,6 +60,7 @@ export default function AddItemDialog({ open, onClose, onSave, type }) {
                 </SelectContent>
               </Select>
             </div>
+            <div className="col-span-2"><Label>Custom Type</Label><Input placeholder="e.g., M3 x 10mm" value={formData.custom_type || ""} onChange={(e) => setFormData({ ...formData, custom_type: e.target.value })} /></div>
             <div><Label>Unit Cost ($)</Label><Input type="number" step="0.01" value={formData.unit_cost || ""} onChange={(e) => setFormData({ ...formData, unit_cost: parseFloat(e.target.value) })} /></div>
             <div><Label>Stock Quantity</Label><Input type="number" value={formData.stock_quantity || ""} onChange={(e) => setFormData({ ...formData, stock_quantity: parseInt(e.target.value) })} /></div>
           </>
