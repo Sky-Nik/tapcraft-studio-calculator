@@ -99,11 +99,12 @@ export default function Dashboard() {
       </motion.div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard icon={DollarSign} label="Total Investment" value={`$${totalInvestment.toFixed(0)}`} accent="text-emerald-400" bg="bg-emerald-500/10" delay={0} />
-        <StatCard icon={FileText} label="Total Sales" value={completedSales.length} accent="text-violet-400" bg="bg-violet-500/10" delay={0.05} />
-        <StatCard icon={DollarSign} label="Total Revenue" value={`$${totalRevenue.toFixed(0)}`} accent="text-blue-400" bg="bg-blue-500/10" delay={0.1} />
-        <StatCard icon={TrendingUp} label="Profit Margin" value={`${avgProfit.toFixed(0)}%`} accent="text-amber-400" bg="bg-amber-500/10" delay={0.15} />
+        <StatCard icon={FileText} label="Total Quotes" value={quotes.length} accent="text-violet-400" bg="bg-violet-500/10" delay={0.05} />
+        <StatCard icon={FileText} label="Total Sales" value={completedSales.length} accent="text-blue-400" bg="bg-blue-500/10" delay={0.1} />
+        <StatCard icon={DollarSign} label="Total Revenue" value={`$${totalRevenue.toFixed(0)}`} accent="text-green-400" bg="bg-green-500/10" delay={0.15} />
+        <StatCard icon={TrendingUp} label="Profit Margin" value={`${avgProfit.toFixed(0)}%`} accent="text-amber-400" bg="bg-amber-500/10" delay={0.2} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
