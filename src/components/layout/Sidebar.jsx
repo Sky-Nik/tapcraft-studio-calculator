@@ -35,7 +35,14 @@ const navItems = [
       { label: "Packaging", icon: BoxSelect, page: "Packaging" },
     ],
   },
-  { label: "Tools", icon: Wrench, page: "Tools" },
+  {
+    label: "Tools",
+    icon: Wrench,
+    children: [
+      { label: "Etsy Calculator", icon: Calculator, page: "EtsyCalculator" },
+      { label: "Inventory Manager", icon: Package, page: "InventoryManager" },
+    ],
+  },
   { label: "Settings", icon: Settings, page: "Settings" },
 ];
 
