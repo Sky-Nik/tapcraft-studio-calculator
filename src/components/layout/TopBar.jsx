@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 const pageTitles = {
   Dashboard: "Dashboard",
   Calculator: "Quote Calculator",
+  EtsyCalculator: "Etsy Calculator",
   QuoteHistory: "Quote History",
   Filaments: "Filament Inventory",
   Printers: "Printer Profiles",
@@ -16,6 +17,7 @@ const pageTitles = {
 const pageBreadcrumbs = {
   Dashboard: ["Home"],
   Calculator: ["Home", "Calculator"],
+  EtsyCalculator: ["Home", "Etsy Calculator"],
   QuoteHistory: ["Home", "Quotes"],
   Filaments: ["Home", "Inventory", "Filaments"],
   Printers: ["Home", "Inventory", "Printers"],

@@ -8,6 +8,7 @@ import CustomMarginSlider from "../components/calculator/CustomMarginSlider";
 import CostBreakdownGrid from "../components/calculator/CostBreakdownGrid";
 import CostAllocationChart from "../components/calculator/CostAllocationChart";
 import QuoteActions from "../components/calculator/QuoteActions";
+import CalculatedMetrics from "../components/calculator/CalculatedMetrics";
 import { calculateCosts, DEFAULT_SETTINGS } from "../components/calculator/pricingEngine";
 
 export default function Calculator() {
@@ -82,6 +83,9 @@ export default function Calculator() {
           <CostBreakdownGrid costs={costs} />
           <CostAllocationChart breakdown={costs.breakdown} totalCost={costs.totalCost} />
         </div>
+
+        {/* Calculated Metrics */}
+        <CalculatedMetrics costs={costs} advancedSettings={advancedSettings} />
 
         {/* Actions */}
         <QuoteActions

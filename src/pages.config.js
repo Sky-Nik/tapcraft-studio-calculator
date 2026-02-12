@@ -56,6 +56,7 @@ import Hardware from './pages/Hardware';
 import Packaging from './pages/Packaging';
 import Tools from './pages/Tools';
 import Settings from './pages/Settings';
+import EtsyCalculator from './pages/EtsyCalculator';
 import __Layout from './Layout.jsx';
 
 
@@ -69,6 +70,7 @@ export const PAGES = {
     "Packaging": Packaging,
     "Tools": Tools,
     "Settings": Settings,
+    "EtsyCalculator": EtsyCalculator,
 }
 
 export const pagesConfig = {

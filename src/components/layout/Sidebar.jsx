@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
   { label: "Calculator", icon: Calculator, page: "Calculator" },
+  { label: "Etsy Calculator", icon: Calculator, page: "EtsyCalculator" },
   { label: "Quote History", icon: History, page: "QuoteHistory" },
   {
     label: "Inventory",
