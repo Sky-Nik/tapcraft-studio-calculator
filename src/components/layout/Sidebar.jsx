@@ -16,14 +16,15 @@ import {
   BoxSelect,
   Menu,
   X,
-  Hexagon
+  Hexagon,
+  ShoppingBag
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
   { label: "Calculator", icon: Calculator, page: "Calculator" },
-  { label: "Etsy Calculator", icon: Calculator, page: "EtsyCalculator" },
+  { label: "Sales", icon: ShoppingBag, page: "Sales" },
   { label: "Quote History", icon: History, page: "QuoteHistory" },
   {
     label: "Inventory",

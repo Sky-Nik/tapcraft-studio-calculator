@@ -54,9 +54,9 @@ export default function Dashboard() {
     queryFn: () => base44.entities.Quote.list("-created_date", 50),
   });
 
-  const { data: filaments = [] } = useQuery({
-    queryKey: ["filaments"],
-    queryFn: () => base44.entities.FilamentType.list(),
+  const { data: sales = [] } = useQuery({
+    queryKey: ["sales"],
+    queryFn: () => base44.entities.Sale.list("-sale_date"),
   });
 
   const { data: printers = [] } = useQuery({
@@ -65,16 +65,17 @@ export default function Dashboard() {
   });
 
   const totalInvestment = printers.reduce((sum, p) => sum + (p.printer_cost || 0), 0);
-  const totalRevenue = quotes.reduce((sum, q) => sum + (q.final_price || 0), 0);
-  const totalCost = quotes.reduce((sum, q) => sum + (q.total_cost || 0), 0);
-  const avgMargin = quotes.length > 0
-    ? quotes.reduce((sum, q) => sum + (q.selected_margin || 0), 0) / quotes.length
+  const completedSales = sales.filter(s => s.status === "completed");
+  const totalRevenue = completedSales.reduce((sum, s) => sum + (s.total_amount || 0), 0);
+  const totalProfit = completedSales.reduce((sum, s) => sum + (s.profit || 0), 0);
+  const avgProfit = completedSales.length > 0
+    ? (totalProfit / totalRevenue) * 100
     : 0;
 
-  // Recent quotes for chart
-  const recentData = quotes.slice(0, 7).reverse().map((q) => ({
-    name: q.part_name?.substring(0, 12) || "—",
-    value: q.final_price || 0,
+  // Recent sales for chart
+  const recentData = completedSales.slice(0, 7).reverse().map((s) => ({
+    name: s.product_name?.substring(0, 12) || "—",
+    value: s.total_amount || 0,
   }));
 
   return (
@@ -100,9 +101,9 @@ export default function Dashboard() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={DollarSign} label="Total Investment" value={`$${totalInvestment.toFixed(0)}`} accent="text-emerald-400" bg="bg-emerald-500/10" delay={0} />
-        <StatCard icon={FileText} label="Total Quotes" value={quotes.length} accent="text-violet-400" bg="bg-violet-500/10" delay={0.05} />
+        <StatCard icon={FileText} label="Total Sales" value={completedSales.length} accent="text-violet-400" bg="bg-violet-500/10" delay={0.05} />
         <StatCard icon={DollarSign} label="Total Revenue" value={`$${totalRevenue.toFixed(0)}`} accent="text-blue-400" bg="bg-blue-500/10" delay={0.1} />
-        <StatCard icon={TrendingUp} label="Avg Margin" value={`${avgMargin.toFixed(0)}%`} accent="text-amber-400" bg="bg-amber-500/10" delay={0.15} />
+        <StatCard icon={TrendingUp} label="Profit Margin" value={`${avgProfit.toFixed(0)}%`} accent="text-amber-400" bg="bg-amber-500/10" delay={0.15} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -113,7 +114,7 @@ export default function Dashboard() {
           transition={{ delay: 0.2 }}
           className="lg:col-span-2 bg-[hsl(224,20%,9%)] rounded-2xl border border-white/[0.06] p-6"
         >
-          <h3 className="text-sm font-semibold text-white mb-4">Recent Quotes</h3>
+          <h3 className="text-sm font-semibold text-white mb-4">Recent Sales</h3>
           {recentData.length > 0 ? (
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={recentData}>
@@ -131,12 +132,12 @@ export default function Dashboard() {
             </ResponsiveContainer>
           ) : (
             <div className="h-60 flex items-center justify-center text-slate-600 text-sm">
-              No quotes yet — create your first one!
+              No sales yet — record your first one!
             </div>
           )}
         </motion.div>
 
-        {/* Recent quotes list */}
+        {/* Recent sales list */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -144,25 +145,25 @@ export default function Dashboard() {
           className="bg-[hsl(224,20%,9%)] rounded-2xl border border-white/[0.06] p-6"
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-white">Latest Quotes</h3>
-            <Link to={createPageUrl("QuoteHistory")} className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1">
+            <h3 className="text-sm font-semibold text-white">Latest Sales</h3>
+            <Link to={createPageUrl("Sales")} className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1">
               View all <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
           <div className="space-y-3">
-            {quotes.slice(0, 5).map((q) => (
-              <div key={q.id} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
+            {completedSales.slice(0, 5).map((s) => (
+              <div key={s.id} className="flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0">
                 <div>
-                  <p className="text-sm text-slate-300 font-medium">{q.part_name || "Untitled"}</p>
+                  <p className="text-sm text-slate-300 font-medium">{s.product_name || "Untitled"}</p>
                   <p className="text-[11px] text-slate-600">
-                    {q.created_date ? format(new Date(q.created_date), "MMM d, yyyy") : "—"}
+                    {s.sale_date ? format(new Date(s.sale_date), "MMM d, yyyy") : "—"}
                   </p>
                 </div>
-                <p className="text-sm font-semibold text-white">${(q.final_price || 0).toFixed(2)}</p>
+                <p className="text-sm font-semibold text-green-400">${(s.total_amount || 0).toFixed(2)}</p>
               </div>
             ))}
-            {quotes.length === 0 && (
-              <p className="text-xs text-slate-600 text-center py-6">No quotes yet</p>
+            {completedSales.length === 0 && (
+              <p className="text-xs text-slate-600 text-center py-6">No sales yet</p>
             )}
           </div>
         </motion.div>
