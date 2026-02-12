@@ -55,7 +55,7 @@ export default function ProductInventory() {
         uniqueParts[q.part_name] = {
           name: q.part_name,
           sku: `SKU-${q.part_name.replace(/\s+/g, '-').toUpperCase()}`,
-          category: q.filament_type || "3D Printed",
+          category: q.category || q.filament_type || "3D Printed",
           cost: q.total_cost || 0,
           price: q.final_price || 0,
           stock_quantity: 0,
