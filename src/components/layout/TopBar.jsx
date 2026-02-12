@@ -1,6 +1,16 @@
-import React from "react";
-import { ChevronRight, Sun, Moon } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ChevronRight, Sun, Moon, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { base44 } from "@/api/base44Client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const pageTitles = {
   Dashboard: "Dashboard",
@@ -31,6 +41,28 @@ const pageBreadcrumbs = {
 export default function TopBar({ currentPage, theme, toggleTheme }) {
   const title = pageTitles[currentPage] || currentPage;
   const breadcrumbs = pageBreadcrumbs[currentPage] || ["Home"];
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await base44.auth.logout();
+  };
+
+  const getInitials = (name) => {
+    if (!name) return "U";
+    return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  };
 
   return (
     <header className="h-16 border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-30 flex items-center px-6 lg:px-8">
@@ -47,18 +79,47 @@ export default function TopBar({ currentPage, theme, toggleTheme }) {
         </div>
         <h2 className="text-lg font-semibold text-foreground tracking-tight truncate">{title}</h2>
       </div>
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={toggleTheme}
-        className="ml-4"
-      >
-        {theme === 'dark' ? (
-          <Sun className="h-5 w-5" />
-        ) : (
-          <Moon className="h-5 w-5" />
-        )}
-      </Button>
+      <div className="flex items-center gap-2 ml-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+        >
+          {theme === 'dark' ? (
+            <Sun className="h-5 w-5" />
+          ) : (
+            <Moon className="h-5 w-5" />
+          )}
+        </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+              <Avatar className="h-9 w-9">
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  {user ? getInitials(user.full_name) : <User className="h-4 w-4" />}
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuLabel>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">{user?.full_name || "User"}</p>
+                <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                {user?.role && (
+                  <p className="text-xs leading-none text-muted-foreground capitalize">Role: {user.role}</p>
+                )}
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600 cursor-pointer">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   );
 }
