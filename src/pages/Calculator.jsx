@@ -51,10 +51,20 @@ export default function Calculator() {
     queryFn: () => base44.entities.PackagingItem.list(),
   });
 
-  // Calculate total investment from printers
-  const totalInvestment = useMemo(() => {
-    return printerProfiles.reduce((sum, printer) => sum + (printer.printer_cost || 0), 0);
-  }, [printerProfiles]);
+  // Calculate total inventory investment (printers + hardware + filaments + packaging)
+  const totalInventoryInvestment = useMemo(() => {
+    const printersTotal = printerProfiles.reduce((sum, printer) => sum + (printer.printer_cost || 0), 0);
+    const hardwareTotal = hardwareItems.reduce((sum, item) => sum + ((item.unit_cost || 0) * (item.stock_quantity || 0)), 0);
+    const filamentsTotal = filamentTypes.reduce((sum, fil) => sum + ((fil.cost_per_kg || 0) * (fil.stock_kg || 0)), 0);
+    const packagingTotal = packagingItems.reduce((sum, pkg) => sum + ((pkg.unit_cost || 0) * (pkg.stock_quantity || 0)), 0);
+    return printersTotal + hardwareTotal + filamentsTotal + packagingTotal;
+  }, [printerProfiles, hardwareItems, filamentTypes, packagingItems]);
+
+  // Get selected printer cost
+  const selectedPrinterCost = useMemo(() => {
+    const printer = printerProfiles.find(p => p.id === inputs.printerProfile);
+    return printer?.printer_cost || 0;
+  }, [printerProfiles, inputs.printerProfile]);
 
   // Calculate total hardware cost from selected items
   const totalHardwareCost = useMemo(() => {
@@ -146,7 +156,13 @@ export default function Calculator() {
         </div>
 
         {/* Calculated Metrics */}
-        <CalculatedMetrics costs={costs} advancedSettings={advancedSettings} totalInvestment={totalInvestment} />
+        <CalculatedMetrics 
+          costs={costs} 
+          advancedSettings={advancedSettings} 
+          totalInventoryInvestment={totalInventoryInvestment}
+          selectedPrinterCost={selectedPrinterCost}
+          totalHardwareCost={totalHardwareCost}
+        />
 
         {/* Actions */}
         <QuoteActions

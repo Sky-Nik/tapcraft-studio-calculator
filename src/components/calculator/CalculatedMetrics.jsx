@@ -27,11 +27,17 @@ const MetricCard = ({ icon: Icon, label, value, accent, delay, highlighted }) =>
   </motion.div>
 );
 
-export default function CalculatedMetrics({ costs, advancedSettings, totalInvestment = 0 }) {
+export default function CalculatedMetrics({ 
+  costs, 
+  advancedSettings, 
+  totalInventoryInvestment = 0,
+  selectedPrinterCost = 0,
+  totalHardwareCost = 0
+}) {
   const s = advancedSettings;
   
   // Calculate metrics
-  const printerCost = s.printerCost || 0;
+  const printerCost = selectedPrinterCost || s.printerCost || 0;
   const annualCost = s.annualMaintenance || 0;
   const lifetimeCost = printerCost + (annualCost * (s.estimatedLifeYears || 5));
   const estimatedUptimeHrs = ((s.uptimePercent || 70) / 100) * 365 * 24 * (s.estimatedLifeYears || 5);
@@ -61,59 +67,66 @@ export default function CalculatedMetrics({ costs, advancedSettings, totalInvest
         <MetricCard
           icon={DollarSign}
           label="Total Inventory Investment"
-          value={`$${totalInvestment.toFixed(2)}`}
+          value={`AUD ${totalInventoryInvestment.toFixed(2)}`}
           accent="text-emerald-400"
           delay={0}
+          highlighted
         />
         <MetricCard
           icon={DollarSign}
           label="Selected Printer Cost"
-          value={`$${printerCost.toFixed(2)}`}
+          value={`AUD ${printerCost.toFixed(2)}`}
           accent="text-violet-400"
           delay={0.03}
         />
         <MetricCard
-          icon={TrendingUp}
-          label="Lifetime Cost"
-          value={`$${lifetimeCost.toFixed(2)}`}
+          icon={DollarSign}
+          label="Hardware Used in Quote"
+          value={`AUD ${totalHardwareCost.toFixed(2)}`}
           accent="text-blue-400"
           delay={0.05}
         />
         <MetricCard
+          icon={TrendingUp}
+          label="Lifetime Cost"
+          value={`AUD ${lifetimeCost.toFixed(2)}`}
+          accent="text-cyan-400"
+          delay={0.08}
+        />
+        <MetricCard
           icon={Clock}
           label="Estimated Uptime"
-          value={`${Math.round(estimatedUptimeHrs)} hrs/year`}
+          value={`${Math.round(estimatedUptimeHrs / (s.estimatedLifeYears || 5))} hrs/year`}
           accent="text-purple-400"
-          delay={0.1}
+          delay={0.11}
         />
         <MetricCard
           icon={TrendingUp}
           label="Printer Depreciation"
-          value={`${printerDepreciationPerHr.toFixed(2)} AUD/hr`}
+          value={`AUD ${printerDepreciationPerHr.toFixed(2)}/hr`}
           accent="text-orange-400"
-          delay={0.15}
+          delay={0.14}
         />
         <MetricCard
           icon={Wrench}
           label="Maintenance Cost"
-          value={`${maintenanceCostPerHr.toFixed(2)} AUD/hr`}
-          accent="text-cyan-400"
-          delay={0.2}
+          value={`AUD ${maintenanceCostPerHr.toFixed(2)}/hr`}
+          accent="text-pink-400"
+          delay={0.17}
         />
         <MetricCard
           icon={Zap}
           label="Electricity Cost"
-          value={`${electricityCostPerHr.toFixed(2)} AUD/hr`}
+          value={`AUD ${electricityCostPerHr.toFixed(2)}/hr`}
           accent="text-yellow-400"
-          delay={0.25}
+          delay={0.2}
         />
         <MetricCard
           icon={Calculator}
           label="Total Printer Cost"
-          value={`${totalPrinterCostPerHr.toFixed(2)} AUD/hr`}
-          accent="text-violet-300"
-          delay={0.3}
-          highlighted
+          value={`AUD ${totalPrinterCostPerHr.toFixed(2)}/hr`}
+          accent="text-primary"
+          delay={0.23}
         />
       </div>
     </div>
