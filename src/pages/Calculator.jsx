@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import ProjectDetailsCard from "../components/calculator/ProjectDetailsCard";
 import PricingTierCards from "../components/calculator/PricingTierCards";
 import CustomMarginSlider from "../components/calculator/CustomMarginSlider";
+import BatchProductionCard from "../components/calculator/BatchProductionCard";
 import CostBreakdownGrid from "../components/calculator/CostBreakdownGrid";
 import CostAllocationChart from "../components/calculator/CostAllocationChart";
 import QuoteActions from "../components/calculator/QuoteActions";
@@ -20,7 +21,7 @@ export default function Calculator() {
     printTimeMinutes: 0,
     laborTimeMinutes: 0,
     selectedHardware: [],
-    packagingCost: 0,
+    selectedPackaging: [],
     batchEnabled: false,
     batchQuantity: 1,
   });
@@ -28,6 +29,7 @@ export default function Calculator() {
   const [advancedSettings, setAdvancedSettings] = useState({ ...DEFAULT_SETTINGS });
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [customMargin, setCustomMargin] = useState(40);
+  const [batchDiscount, setBatchDiscount] = useState(0);
 
   const { data: printerProfiles = [] } = useQuery({
     queryKey: ["printerProfiles"],
@@ -44,6 +46,11 @@ export default function Calculator() {
     queryFn: () => base44.entities.HardwareItem.list(),
   });
 
+  const { data: packagingItems = [] } = useQuery({
+    queryKey: ["packagingItems"],
+    queryFn: () => base44.entities.PackagingItem.list(),
+  });
+
   // Calculate total investment from printers
   const totalInvestment = useMemo(() => {
     return printerProfiles.reduce((sum, printer) => sum + (printer.printer_cost || 0), 0);
@@ -56,6 +63,14 @@ export default function Calculator() {
       return total + (item?.unit_cost || 0);
     }, 0);
   }, [inputs.selectedHardware, hardwareItems]);
+
+  // Calculate total packaging cost from selected items
+  const totalPackagingCost = useMemo(() => {
+    return inputs.selectedPackaging.reduce((total, pkgId) => {
+      const item = packagingItems.find(p => p.id === pkgId);
+      return total + (item?.unit_cost || 0);
+    }, 0);
+  }, [inputs.selectedPackaging, packagingItems]);
 
   // Populate filament costs from database
   const enrichedFilamentRows = useMemo(() => {
@@ -74,9 +89,10 @@ export default function Calculator() {
     return calculateCosts({ 
       ...inputs, 
       hardwareCost: totalHardwareCost,
+      packagingCost: totalPackagingCost,
       filamentRows: enrichedFilamentRows 
     }, advancedSettings);
-  }, [inputs, advancedSettings, totalHardwareCost, enrichedFilamentRows]);
+  }, [inputs, advancedSettings, totalHardwareCost, totalPackagingCost, enrichedFilamentRows]);
 
   const batchQty = inputs.batchEnabled ? inputs.batchQuantity : 1;
 
@@ -94,7 +110,9 @@ export default function Calculator() {
           printerProfiles={printerProfiles}
           filamentTypes={filamentTypes}
           hardwareItems={hardwareItems}
+          packagingItems={packagingItems}
           totalHardwareCost={totalHardwareCost}
+          totalPackagingCost={totalPackagingCost}
         />
       </div>
 
@@ -110,6 +128,15 @@ export default function Calculator() {
           customMargin={customMargin}
           setCustomMargin={setCustomMargin}
           batchQuantity={batchQty}
+        />
+
+        {/* Batch Production Section */}
+        <BatchProductionCard
+          unitCost={costs.unitCost}
+          batchQuantity={batchQty}
+          batchDiscount={batchDiscount}
+          setBatchDiscount={setBatchDiscount}
+          vatPercent={advancedSettings.vatPercent}
         />
 
         {/* Cost Breakdown + Chart */}

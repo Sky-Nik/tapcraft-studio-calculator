@@ -42,7 +42,9 @@ export default function ProjectDetailsCard({
   printerProfiles,
   filamentTypes,
   hardwareItems,
+  packagingItems,
   totalHardwareCost,
+  totalPackagingCost,
 }) {
   const handleInput = (field, value) => {
     setInputs((prev) => ({ ...prev, [field]: value }));
@@ -65,6 +67,22 @@ export default function ProjectDetailsCard({
     setInputs((prev) => ({
       ...prev,
       selectedHardware: prev.selectedHardware.filter((id) => id !== itemId),
+    }));
+  };
+
+  const addPackagingItem = (itemId) => {
+    if (itemId && !inputs.selectedPackaging.includes(itemId)) {
+      setInputs((prev) => ({
+        ...prev,
+        selectedPackaging: [...prev.selectedPackaging, itemId],
+      }));
+    }
+  };
+
+  const removePackagingItem = (itemId) => {
+    setInputs((prev) => ({
+      ...prev,
+      selectedPackaging: prev.selectedPackaging.filter((id) => id !== itemId),
     }));
   };
 
@@ -275,14 +293,64 @@ export default function ProjectDetailsCard({
             </div>
           </FieldWithTooltip>
 
-          <FieldWithTooltip label="Packaging Cost ($)" tooltip="Packaging materials and shipping prep">
-            <Input
-              type="number"
-              className={inputClass}
-              placeholder="0.00"
-              value={inputs.packagingCost || ""}
-              onChange={(e) => handleInput("packagingCost", parseFloat(e.target.value) || 0)}
-            />
+          <FieldWithTooltip label="Packaging Items" tooltip="Select packaging materials used">
+            <div className="space-y-2">
+              <Select onValueChange={addPackagingItem}>
+                <SelectTrigger className={inputClass}>
+                  <SelectValue placeholder="Add packaging..." />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-700">
+                  {packagingItems
+                    .filter((item) => !inputs.selectedPackaging.includes(item.id))
+                    .map((item) => (
+                      <SelectItem
+                        key={item.id}
+                        value={item.id}
+                        className="text-slate-200 focus:bg-violet-500/20 focus:text-white"
+                      >
+                        {item.name} - ${item.unit_cost?.toFixed(2) || "0.00"}
+                      </SelectItem>
+                    ))}
+                  {packagingItems.filter((item) => !inputs.selectedPackaging.includes(item.id)).length === 0 && (
+                    <SelectItem value="none" disabled className="text-slate-500">
+                      No more items available
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+
+              {inputs.selectedPackaging.length > 0 && (
+                <div className="space-y-1.5">
+                  {inputs.selectedPackaging.map((pkgId) => {
+                    const item = packagingItems.find((p) => p.id === pkgId);
+                    if (!item) return null;
+                    return (
+                      <div
+                        key={pkgId}
+                        className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50"
+                      >
+                        <span className="text-xs text-slate-300">{item.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-violet-400 font-medium">
+                            ${item.unit_cost?.toFixed(2) || "0.00"}
+                          </span>
+                          <button
+                            onClick={() => removePackagingItem(pkgId)}
+                            className="w-5 h-5 rounded flex items-center justify-center hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-colors"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-violet-500/10 border border-violet-500/30">
+                    <span className="text-xs font-semibold text-violet-300">Total Packaging Cost</span>
+                    <span className="text-sm font-bold text-violet-400">${totalPackagingCost.toFixed(2)}</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </FieldWithTooltip>
 
           {/* Batch toggle */}
