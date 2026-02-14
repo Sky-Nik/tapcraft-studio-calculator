@@ -23,7 +23,12 @@ import {
   TrendingUp,
   CheckSquare,
   MessageSquare,
-  BarChart3
+  BarChart3,
+  Share2,
+  Image,
+  Calendar,
+  Link2,
+  LineChart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -60,6 +65,17 @@ const navItems = [
       { label: "Tasks", icon: CheckSquare, page: "Tasks" },
       { label: "Communications", icon: MessageSquare, page: "Communications" },
       { label: "Reports", icon: BarChart3, page: "Reports" },
+    ],
+  },
+  {
+    label: "Social Media",
+    icon: Share2,
+    children: [
+      { label: "Media Library", icon: Image, page: "SocialLibrary" },
+      { label: "Campaigns", icon: TrendingUp, page: "SocialCampaigns" },
+      { label: "Calendar", icon: Calendar, page: "SocialCalendar" },
+      { label: "Connections", icon: Link2, page: "SocialConnections" },
+      { label: "Analytics", icon: LineChart, page: "SocialAnalytics" },
     ],
   },
   { label: "User Management", icon: Users, page: "UserManagement" },
