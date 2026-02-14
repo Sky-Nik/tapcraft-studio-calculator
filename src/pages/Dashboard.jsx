@@ -148,6 +148,24 @@ export default function Dashboard() {
     engagement: data.engagement
   }));
 
+  // Engagement breakdown for pie chart
+  const totalLikes = socialAnalytics.reduce((sum, a) => sum + (a.likes || 0), 0);
+  const totalComments = socialAnalytics.reduce((sum, a) => sum + (a.comments || 0), 0);
+  const totalShares = socialAnalytics.reduce((sum, a) => sum + (a.shares || 0), 0);
+  const engagementBreakdown = [
+    { name: 'Likes', value: totalLikes },
+    { name: 'Comments', value: totalComments },
+    { name: 'Shares', value: totalShares }
+  ].filter(item => item.value > 0);
+
+  // Content status distribution
+  const contentStatusData = [
+    { name: 'Draft', value: socialAssets.filter(a => a.status === 'draft').length },
+    { name: 'Approved', value: socialAssets.filter(a => a.status === 'approved').length },
+    { name: 'Published', value: socialAssets.filter(a => a.status === 'published').length },
+    { name: 'Archived', value: socialAssets.filter(a => a.status === 'archived').length }
+  ].filter(item => item.value > 0);
+
   // Recent sales for chart
   const recentData = completedSales.slice(0, 7).reverse().map((s) => ({
     name: s.product_name?.substring(0, 12) || "—",
@@ -300,25 +318,75 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {socialPlatformData.length > 0 && (
-          <div>
-            <h4 className="text-sm font-medium text-slate-400 mb-3">Platform Performance</h4>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={socialPlatformData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="name" tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
-                  labelStyle={{ color: '#94a3b8' }}
-                />
-                <Legend wrapperStyle={{ color: '#94a3b8', fontSize: '12px' }} />
-                <Bar dataKey="impressions" fill="#1E73FF" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="engagement" fill="#ec4899" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Platform Performance */}
+          {socialPlatformData.length > 0 && (
+            <div className="lg:col-span-2">
+              <h4 className="text-sm font-medium text-slate-400 mb-3">Platform Performance</h4>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={socialPlatformData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="name" tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                    labelStyle={{ color: '#94a3b8' }}
+                  />
+                  <Legend wrapperStyle={{ color: '#94a3b8', fontSize: '12px' }} />
+                  <Bar dataKey="impressions" fill="#1E73FF" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="engagement" fill="#ec4899" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          {/* Engagement Breakdown */}
+          {engagementBreakdown.length > 0 && (
+            <div>
+              <h4 className="text-sm font-medium text-slate-400 mb-3">Engagement Types</h4>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={engagementBreakdown}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={70}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {engagementBreakdown.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          {/* Content Status */}
+          {contentStatusData.length > 0 && (
+            <div className="lg:col-span-3">
+              <h4 className="text-sm font-medium text-slate-400 mb-3">Content Status Distribution</h4>
+              <ResponsiveContainer width="100%" height={180}>
+                <BarChart data={contentStatusData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis type="number" tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis dataKey="name" type="category" tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                    labelStyle={{ color: '#94a3b8' }}
+                  />
+                  <Bar dataKey="value" fill="#10b981" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
