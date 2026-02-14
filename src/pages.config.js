@@ -69,6 +69,8 @@ import Reports from './pages/Reports';
 import SocialLibrary from './pages/SocialLibrary';
 import SocialCampaigns from './pages/SocialCampaigns';
 import SocialConnections from './pages/SocialConnections';
+import SocialCalendar from './pages/SocialCalendar';
+import SocialAnalytics from './pages/SocialAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -95,6 +97,8 @@ export const PAGES = {
     "SocialLibrary": SocialLibrary,
     "SocialCampaigns": SocialCampaigns,
     "SocialConnections": SocialConnections,
+    "SocialCalendar": SocialCalendar,
+    "SocialAnalytics": SocialAnalytics,
 }
 
 export const pagesConfig = {
