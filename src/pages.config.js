@@ -62,6 +62,8 @@ import Tools from './pages/Tools';
 import UserManagement from './pages/UserManagement';
 import Leads from './pages/Leads';
 import Contacts from './pages/Contacts';
+import Deals from './pages/Deals';
+import Tasks from './pages/Tasks';
 import __Layout from './Layout.jsx';
 
 
@@ -81,6 +83,8 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "Leads": Leads,
     "Contacts": Contacts,
+    "Deals": Deals,
+    "Tasks": Tasks,
 }
 
 export const pagesConfig = {
