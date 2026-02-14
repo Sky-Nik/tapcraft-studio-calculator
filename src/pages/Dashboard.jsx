@@ -151,13 +151,33 @@ export default function Dashboard() {
         <StatCard icon={TrendingUp} label="Profit Margin" value={`${avgProfit.toFixed(0)}%`} accent="text-amber-400" bg="bg-amber-500/10" delay={0.2} />
       </div>
 
-      {/* CRM Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Users} label="Total Leads" value={leads.length} accent="text-blue-400" bg="bg-blue-500/10" delay={0.25} />
-        <StatCard icon={Users} label="Contacts" value={contacts.length} accent="text-purple-400" bg="bg-purple-500/10" delay={0.3} />
-        <StatCard icon={Target} label="Won Deals" value={wonDeals.length} accent="text-green-400" bg="bg-green-500/10" delay={0.35} />
-        <StatCard icon={TrendingUp} label="Conversion Rate" value={`${conversionRate}%`} accent="text-orange-400" bg="bg-orange-500/10" delay={0.4} />
-      </div>
+      {/* CRM Analytics */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+        className="bg-[hsl(224,20%,9%)] rounded-2xl border border-white/[0.06] p-6"
+      >
+        <h3 className="text-lg font-semibold text-white mb-4">CRM Analytics</h3>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-2xl font-bold text-blue-400">{leads.length}</div>
+            <div className="text-xs text-slate-500 mt-1">Total Leads</div>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-2xl font-bold text-purple-400">{contacts.length}</div>
+            <div className="text-xs text-slate-500 mt-1">Contacts</div>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-2xl font-bold text-green-400">{wonDeals.length}</div>
+            <div className="text-xs text-slate-500 mt-1">Won Deals</div>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-2xl font-bold text-orange-400">{conversionRate}%</div>
+            <div className="text-xs text-slate-500 mt-1">Conversion Rate</div>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Social Media Analytics */}
       <motion.div
