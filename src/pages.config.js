@@ -56,10 +56,12 @@ import InventoryManager from './pages/InventoryManager';
 import Packaging from './pages/Packaging';
 import Printers from './pages/Printers';
 import QuoteHistory from './pages/QuoteHistory';
+import Sales from './pages/Sales';
 import Settings from './pages/Settings';
 import Tools from './pages/Tools';
-import Sales from './pages/Sales';
 import UserManagement from './pages/UserManagement';
+import Leads from './pages/Leads';
+import Contacts from './pages/Contacts';
 import __Layout from './Layout.jsx';
 
 
@@ -73,10 +75,12 @@ export const PAGES = {
     "Packaging": Packaging,
     "Printers": Printers,
     "QuoteHistory": QuoteHistory,
+    "Sales": Sales,
     "Settings": Settings,
     "Tools": Tools,
-    "Sales": Sales,
     "UserManagement": UserManagement,
+    "Leads": Leads,
+    "Contacts": Contacts,
 }
 
 export const pagesConfig = {
