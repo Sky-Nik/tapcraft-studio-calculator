@@ -11,6 +11,8 @@ import {
   ArrowRight,
   Layers,
   Printer,
+  Users,
+  Target,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -64,6 +66,21 @@ export default function Dashboard() {
     queryFn: () => base44.entities.PrinterProfile.list(),
   });
 
+  const { data: leads = [] } = useQuery({
+    queryKey: ["leads"],
+    queryFn: () => base44.entities.Lead.list(),
+  });
+
+  const { data: deals = [] } = useQuery({
+    queryKey: ["deals"],
+    queryFn: () => base44.entities.Deal.list(),
+  });
+
+  const { data: contacts = [] } = useQuery({
+    queryKey: ["contacts"],
+    queryFn: () => base44.entities.Contact.list(),
+  });
+
   const totalInvestment = printers.reduce((sum, p) => sum + (p.printer_cost || 0), 0);
   const completedSales = sales.filter(s => s.status === "completed");
   const totalRevenue = completedSales.reduce((sum, s) => sum + (s.total_amount || 0), 0);
@@ -71,6 +88,11 @@ export default function Dashboard() {
   const avgProfit = completedSales.length > 0
     ? (totalProfit / totalRevenue) * 100
     : 0;
+
+  // CRM metrics
+  const wonDeals = deals.filter(d => d.stage === "Won");
+  const totalDealsValue = wonDeals.reduce((sum, d) => sum + (parseFloat(d.value) || 0), 0);
+  const conversionRate = leads.length > 0 ? ((wonDeals.length / leads.length) * 100).toFixed(0) : 0;
 
   // Recent sales for chart
   const recentData = completedSales.slice(0, 7).reverse().map((s) => ({
@@ -105,6 +127,14 @@ export default function Dashboard() {
         <StatCard icon={FileText} label="Total Sales" value={completedSales.length} accent="text-blue-400" bg="bg-blue-500/10" delay={0.1} />
         <StatCard icon={DollarSign} label="Total Revenue" value={`$${totalRevenue.toFixed(0)}`} accent="text-green-400" bg="bg-green-500/10" delay={0.15} />
         <StatCard icon={TrendingUp} label="Profit Margin" value={`${avgProfit.toFixed(0)}%`} accent="text-amber-400" bg="bg-amber-500/10" delay={0.2} />
+      </div>
+
+      {/* CRM Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard icon={Users} label="Total Leads" value={leads.length} accent="text-blue-400" bg="bg-blue-500/10" delay={0.25} />
+        <StatCard icon={Users} label="Contacts" value={contacts.length} accent="text-purple-400" bg="bg-purple-500/10" delay={0.3} />
+        <StatCard icon={Target} label="Won Deals" value={wonDeals.length} accent="text-green-400" bg="bg-green-500/10" delay={0.35} />
+        <StatCard icon={TrendingUp} label="Conversion Rate" value={`${conversionRate}%`} accent="text-orange-400" bg="bg-orange-500/10" delay={0.4} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
