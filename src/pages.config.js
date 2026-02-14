@@ -64,6 +64,8 @@ import Leads from './pages/Leads';
 import Contacts from './pages/Contacts';
 import Deals from './pages/Deals';
 import Tasks from './pages/Tasks';
+import Communications from './pages/Communications';
+import Reports from './pages/Reports';
 import __Layout from './Layout.jsx';
 
 
@@ -85,6 +87,8 @@ export const PAGES = {
     "Contacts": Contacts,
     "Deals": Deals,
     "Tasks": Tasks,
+    "Communications": Communications,
+    "Reports": Reports,
 }
 
 export const pagesConfig = {
