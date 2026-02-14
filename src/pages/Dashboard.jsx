@@ -94,6 +94,16 @@ export default function Dashboard() {
   const totalDealsValue = wonDeals.reduce((sum, d) => sum + (parseFloat(d.value) || 0), 0);
   const conversionRate = leads.length > 0 ? ((wonDeals.length / leads.length) * 100).toFixed(0) : 0;
 
+  const { data: socialAssets = [] } = useQuery({
+    queryKey: ["mediaAssets"],
+    queryFn: () => base44.entities.MediaAsset.list(),
+  });
+
+  const { data: scheduledPosts = [] } = useQuery({
+    queryKey: ["postDrafts"],
+    queryFn: () => base44.entities.PostDraft.filter({ status: "scheduled" }),
+  });
+
   // Recent sales for chart
   const recentData = completedSales.slice(0, 7).reverse().map((s) => ({
     name: s.product_name?.substring(0, 12) || "—",
@@ -136,6 +146,30 @@ export default function Dashboard() {
         <StatCard icon={Target} label="Won Deals" value={wonDeals.length} accent="text-green-400" bg="bg-green-500/10" delay={0.35} />
         <StatCard icon={TrendingUp} label="Conversion Rate" value={`${conversionRate}%`} accent="text-orange-400" bg="bg-orange-500/10" delay={0.4} />
       </div>
+
+      {/* Social Media Stats */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45 }}
+        className="bg-[hsl(224,20%,9%)] rounded-2xl border border-white/[0.06] p-6"
+      >
+        <h3 className="text-lg font-semibold text-white mb-4">Social Media Overview</h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-3xl font-bold text-white">{socialAssets.length}</div>
+            <div className="text-sm text-slate-500 mt-1">Media Assets</div>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-3xl font-bold text-white">{scheduledPosts.length}</div>
+            <div className="text-sm text-slate-500 mt-1">Scheduled Posts</div>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-3xl font-bold text-white">{socialAssets.filter(a => a.status === 'approved').length}</div>
+            <div className="text-sm text-slate-500 mt-1">Approved Content</div>
+          </div>
+        </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chart */}
