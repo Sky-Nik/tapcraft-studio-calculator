@@ -66,6 +66,7 @@ import Deals from './pages/Deals';
 import Tasks from './pages/Tasks';
 import Communications from './pages/Communications';
 import Reports from './pages/Reports';
+import SocialLibrary from './pages/SocialLibrary';
 import __Layout from './Layout.jsx';
 
 
@@ -89,6 +90,7 @@ export const PAGES = {
     "Tasks": Tasks,
     "Communications": Communications,
     "Reports": Reports,
+    "SocialLibrary": SocialLibrary,
 }
 
 export const pagesConfig = {
