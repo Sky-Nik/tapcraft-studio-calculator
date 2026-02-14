@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend } from "recharts";
 import { format } from "date-fns";
 
 const StatCard = ({ icon: Icon, label, value, accent, bg, delay }) => (
@@ -116,11 +116,45 @@ export default function Dashboard() {
     ? (socialAnalytics.reduce((sum, a) => sum + (a.engagement_rate || 0), 0) / socialAnalytics.length).toFixed(1)
     : 0;
 
+  // CRM Pipeline data for chart
+  const dealStages = ["New", "Contacted", "Quoted", "Negotiation", "Won", "Lost"];
+  const pipelineData = dealStages.map(stage => ({
+    stage,
+    count: deals.filter(d => d.stage === stage).length,
+    value: deals.filter(d => d.stage === stage).reduce((sum, d) => sum + (parseFloat(d.value) || 0), 0)
+  }));
+
+  // Lead sources data for pie chart
+  const leadSources = leads.reduce((acc, lead) => {
+    const source = lead.source || 'Other';
+    acc[source] = (acc[source] || 0) + 1;
+    return acc;
+  }, {});
+  const leadSourceData = Object.entries(leadSources).map(([name, value]) => ({ name, value }));
+
+  // Social platform distribution
+  const platformData = socialAnalytics.reduce((acc, a) => {
+    const platform = a.platform || 'unknown';
+    if (!acc[platform]) {
+      acc[platform] = { impressions: 0, engagement: 0 };
+    }
+    acc[platform].impressions += a.impressions || 0;
+    acc[platform].engagement += (a.likes || 0) + (a.comments || 0) + (a.shares || 0);
+    return acc;
+  }, {});
+  const socialPlatformData = Object.entries(platformData).map(([name, data]) => ({
+    name: name.charAt(0).toUpperCase() + name.slice(1),
+    impressions: data.impressions,
+    engagement: data.engagement
+  }));
+
   // Recent sales for chart
   const recentData = completedSales.slice(0, 7).reverse().map((s) => ({
     name: s.product_name?.substring(0, 12) || "—",
     value: s.total_amount || 0,
   }));
+
+  const COLORS = ['#1E73FF', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#6366f1'];
 
   return (
     <div className="max-w-[1400px] mx-auto space-y-6">
@@ -159,7 +193,7 @@ export default function Dashboard() {
         className="bg-[hsl(224,20%,9%)] rounded-2xl border border-white/[0.06] p-6"
       >
         <h3 className="text-lg font-semibold text-white mb-4">CRM Analytics</h3>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-4 rounded-lg bg-white/[0.02]">
             <div className="text-2xl font-bold text-blue-400">{leads.length}</div>
             <div className="text-xs text-slate-500 mt-1">Total Leads</div>
@@ -177,6 +211,58 @@ export default function Dashboard() {
             <div className="text-xs text-slate-500 mt-1">Conversion Rate</div>
           </div>
         </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Pipeline Chart */}
+          <div>
+            <h4 className="text-sm font-medium text-slate-400 mb-3">Deals Pipeline</h4>
+            {pipelineData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={pipelineData}>
+                  <XAxis dataKey="stage" tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                    labelStyle={{ color: '#94a3b8' }}
+                  />
+                  <Bar dataKey="count" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[200px] flex items-center justify-center text-slate-600 text-xs">No deals yet</div>
+            )}
+          </div>
+
+          {/* Lead Sources Pie Chart */}
+          <div>
+            <h4 className="text-sm font-medium text-slate-400 mb-3">Lead Sources</h4>
+            {leadSourceData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={leadSourceData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                    outerRadius={70}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {leadSourceData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[200px] flex items-center justify-center text-slate-600 text-xs">No leads yet</div>
+            )}
+          </div>
+        </div>
       </motion.div>
 
       {/* Social Media Analytics */}
@@ -187,7 +273,7 @@ export default function Dashboard() {
         className="bg-[hsl(224,20%,9%)] rounded-2xl border border-white/[0.06] p-6"
       >
         <h3 className="text-lg font-semibold text-white mb-4">Social Media Analytics</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
           <div className="text-center p-4 rounded-lg bg-white/[0.02]">
             <div className="text-2xl font-bold text-blue-400">{socialAssets.length}</div>
             <div className="text-xs text-slate-500 mt-1">Media Assets</div>
@@ -213,6 +299,26 @@ export default function Dashboard() {
             <div className="text-xs text-slate-500 mt-1">Avg Engagement</div>
           </div>
         </div>
+
+        {socialPlatformData.length > 0 && (
+          <div>
+            <h4 className="text-sm font-medium text-slate-400 mb-3">Platform Performance</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={socialPlatformData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis dataKey="name" tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                  labelStyle={{ color: '#94a3b8' }}
+                />
+                <Legend wrapperStyle={{ color: '#94a3b8', fontSize: '12px' }} />
+                <Bar dataKey="impressions" fill="#1E73FF" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="engagement" fill="#ec4899" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
