@@ -18,7 +18,12 @@ import {
   X,
   Hexagon,
   ShoppingBag,
-  Users
+  Users,
+  UserPlus,
+  TrendingUp,
+  CheckSquare,
+  MessageSquare,
+  BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +50,19 @@ const navItems = [
       { label: "Inventory Manager", icon: Package, page: "InventoryManager" },
     ],
   },
-  { label: "Users", icon: Users, page: "UserManagement" },
+  {
+    label: "CRM",
+    icon: Users,
+    children: [
+      { label: "Leads", icon: UserPlus, page: "Leads" },
+      { label: "Contacts", icon: Users, page: "Contacts" },
+      { label: "Deals", icon: TrendingUp, page: "Deals" },
+      { label: "Tasks", icon: CheckSquare, page: "Tasks" },
+      { label: "Communications", icon: MessageSquare, page: "Communications" },
+      { label: "Reports", icon: BarChart3, page: "Reports" },
+    ],
+  },
+  { label: "User Management", icon: Users, page: "UserManagement" },
   { label: "Settings", icon: Settings, page: "Settings" },
 ];
 
