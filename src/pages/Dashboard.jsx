@@ -104,6 +104,18 @@ export default function Dashboard() {
     queryFn: () => base44.entities.PostDraft.filter({ status: "scheduled" }),
   });
 
+  const { data: socialAnalytics = [] } = useQuery({
+    queryKey: ["postAnalytics"],
+    queryFn: () => base44.entities.PostAnalytics.list(),
+  });
+
+  // Social media metrics
+  const totalImpressions = socialAnalytics.reduce((sum, a) => sum + (a.impressions || 0), 0);
+  const totalEngagement = socialAnalytics.reduce((sum, a) => sum + (a.likes || 0) + (a.comments || 0) + (a.shares || 0), 0);
+  const avgEngagementRate = socialAnalytics.length > 0
+    ? (socialAnalytics.reduce((sum, a) => sum + (a.engagement_rate || 0), 0) / socialAnalytics.length).toFixed(1)
+    : 0;
+
   // Recent sales for chart
   const recentData = completedSales.slice(0, 7).reverse().map((s) => ({
     name: s.product_name?.substring(0, 12) || "—",
@@ -147,26 +159,38 @@ export default function Dashboard() {
         <StatCard icon={TrendingUp} label="Conversion Rate" value={`${conversionRate}%`} accent="text-orange-400" bg="bg-orange-500/10" delay={0.4} />
       </div>
 
-      {/* Social Media Stats */}
+      {/* Social Media Analytics */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.45 }}
         className="bg-[hsl(224,20%,9%)] rounded-2xl border border-white/[0.06] p-6"
       >
-        <h3 className="text-lg font-semibold text-white mb-4">Social Media Overview</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <h3 className="text-lg font-semibold text-white mb-4">Social Media Analytics</h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div className="text-center p-4 rounded-lg bg-white/[0.02]">
-            <div className="text-3xl font-bold text-white">{socialAssets.length}</div>
-            <div className="text-sm text-slate-500 mt-1">Media Assets</div>
+            <div className="text-2xl font-bold text-blue-400">{socialAssets.length}</div>
+            <div className="text-xs text-slate-500 mt-1">Media Assets</div>
           </div>
           <div className="text-center p-4 rounded-lg bg-white/[0.02]">
-            <div className="text-3xl font-bold text-white">{scheduledPosts.length}</div>
-            <div className="text-sm text-slate-500 mt-1">Scheduled Posts</div>
+            <div className="text-2xl font-bold text-purple-400">{scheduledPosts.length}</div>
+            <div className="text-xs text-slate-500 mt-1">Scheduled Posts</div>
           </div>
           <div className="text-center p-4 rounded-lg bg-white/[0.02]">
-            <div className="text-3xl font-bold text-white">{socialAssets.filter(a => a.status === 'approved').length}</div>
-            <div className="text-sm text-slate-500 mt-1">Approved Content</div>
+            <div className="text-2xl font-bold text-green-400">{socialAssets.filter(a => a.status === 'approved').length}</div>
+            <div className="text-xs text-slate-500 mt-1">Approved Content</div>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-2xl font-bold text-orange-400">{totalImpressions.toLocaleString()}</div>
+            <div className="text-xs text-slate-500 mt-1">Total Impressions</div>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-2xl font-bold text-pink-400">{totalEngagement.toLocaleString()}</div>
+            <div className="text-xs text-slate-500 mt-1">Total Engagement</div>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/[0.02]">
+            <div className="text-2xl font-bold text-cyan-400">{avgEngagementRate}%</div>
+            <div className="text-xs text-slate-500 mt-1">Avg Engagement</div>
           </div>
         </div>
       </motion.div>

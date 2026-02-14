@@ -48,27 +48,27 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Calculator from './pages/Calculator';
+import Communications from './pages/Communications';
+import Contacts from './pages/Contacts';
 import Dashboard from './pages/Dashboard';
+import Deals from './pages/Deals';
 import EtsyCalculator from './pages/EtsyCalculator';
 import Filaments from './pages/Filaments';
 import Hardware from './pages/Hardware';
 import InventoryManager from './pages/InventoryManager';
+import Leads from './pages/Leads';
 import Packaging from './pages/Packaging';
 import Printers from './pages/Printers';
 import QuoteHistory from './pages/QuoteHistory';
+import Reports from './pages/Reports';
 import Sales from './pages/Sales';
 import Settings from './pages/Settings';
-import Tools from './pages/Tools';
-import UserManagement from './pages/UserManagement';
-import Leads from './pages/Leads';
-import Contacts from './pages/Contacts';
-import Deals from './pages/Deals';
-import Tasks from './pages/Tasks';
-import Communications from './pages/Communications';
-import Reports from './pages/Reports';
-import SocialLibrary from './pages/SocialLibrary';
 import SocialCampaigns from './pages/SocialCampaigns';
 import SocialConnections from './pages/SocialConnections';
+import SocialLibrary from './pages/SocialLibrary';
+import Tasks from './pages/Tasks';
+import Tools from './pages/Tools';
+import UserManagement from './pages/UserManagement';
 import SocialCalendar from './pages/SocialCalendar';
 import SocialAnalytics from './pages/SocialAnalytics';
 import __Layout from './Layout.jsx';
@@ -76,27 +76,27 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "Calculator": Calculator,
+    "Communications": Communications,
+    "Contacts": Contacts,
     "Dashboard": Dashboard,
+    "Deals": Deals,
     "EtsyCalculator": EtsyCalculator,
     "Filaments": Filaments,
     "Hardware": Hardware,
     "InventoryManager": InventoryManager,
+    "Leads": Leads,
     "Packaging": Packaging,
     "Printers": Printers,
     "QuoteHistory": QuoteHistory,
+    "Reports": Reports,
     "Sales": Sales,
     "Settings": Settings,
-    "Tools": Tools,
-    "UserManagement": UserManagement,
-    "Leads": Leads,
-    "Contacts": Contacts,
-    "Deals": Deals,
-    "Tasks": Tasks,
-    "Communications": Communications,
-    "Reports": Reports,
-    "SocialLibrary": SocialLibrary,
     "SocialCampaigns": SocialCampaigns,
     "SocialConnections": SocialConnections,
+    "SocialLibrary": SocialLibrary,
+    "Tasks": Tasks,
+    "Tools": Tools,
+    "UserManagement": UserManagement,
     "SocialCalendar": SocialCalendar,
     "SocialAnalytics": SocialAnalytics,
 }
