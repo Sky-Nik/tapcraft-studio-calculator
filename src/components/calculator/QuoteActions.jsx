@@ -72,9 +72,9 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
       machine_cost: costs.machineCost || 0,
       electricity_cost: costs.electricityCost || 0,
       total_cost: costs.totalCost || 0,
-      vat_percent: advancedSettings.vatPercent || 0,
+      vat_percent: vatPercent,
       selected_margin: customMargin,
-      final_price: customPrice,
+      final_price: quotedFinalPrice,
       final_price_with_vat: customPriceVat,
       status: "draft",
     };
