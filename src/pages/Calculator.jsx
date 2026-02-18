@@ -33,6 +33,32 @@ export default function Calculator() {
   const [customMargin, setCustomMargin] = useState(40);
   const [batchDiscount, setBatchDiscount] = useState(0);
 
+  // Persist inputs to localStorage
+  React.useEffect(() => {
+    const saved = localStorage.getItem('calculator_inputs');
+    const savedMargin = localStorage.getItem('calculator_customMargin');
+    const savedAdvanced = localStorage.getItem('calculator_advancedSettings');
+    if (saved) {
+      try { setInputs(JSON.parse(saved)); } catch {}
+    }
+    if (savedMargin) setCustomMargin(parseFloat(savedMargin));
+    if (savedAdvanced) {
+      try { setAdvancedSettings(JSON.parse(savedAdvanced)); } catch {}
+    }
+  }, []);
+
+  React.useEffect(() => {
+    localStorage.setItem('calculator_inputs', JSON.stringify(inputs));
+  }, [inputs]);
+
+  React.useEffect(() => {
+    localStorage.setItem('calculator_customMargin', String(customMargin));
+  }, [customMargin]);
+
+  React.useEffect(() => {
+    localStorage.setItem('calculator_advancedSettings', JSON.stringify(advancedSettings));
+  }, [advancedSettings]);
+
   // Check for edit mode on mount
   React.useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -101,11 +127,11 @@ export default function Calculator() {
     return printer?.printer_cost || 0;
   }, [printerProfiles, inputs.printerProfile]);
 
-  // Calculate total hardware cost from selected items
+  // Calculate total hardware cost from selected items (with qty)
   const totalHardwareCost = useMemo(() => {
-    return inputs.selectedHardware.reduce((total, hwId) => {
-      const item = hardwareItems.find(h => h.id === hwId);
-      return total + (item?.unit_cost || 0);
+    return inputs.selectedHardware.reduce((total, hw) => {
+      const item = hardwareItems.find(h => h.id === hw.id);
+      return total + (item?.unit_cost || 0) * (hw.qty || 1);
     }, 0);
   }, [inputs.selectedHardware, hardwareItems]);
 
