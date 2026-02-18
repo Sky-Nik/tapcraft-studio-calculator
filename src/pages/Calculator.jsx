@@ -168,6 +168,34 @@ export default function Calculator() {
 
   const batchQty = inputs.batchEnabled ? inputs.batchQuantity : 1;
 
+  const handleReset = () => {
+    const defaultInputs = {
+      partName: "",
+      category: "",
+      printerProfile: "",
+      filamentRows: [],
+      printTimeHours: 0,
+      printTimeMinutes: 0,
+      laborTimeMinutes: 0,
+      selectedHardware: [],
+      selectedPackaging: [],
+      batchEnabled: false,
+      batchQuantity: 1,
+    };
+    setInputs(defaultInputs);
+    setCustomMargin(40);
+    setAdvancedSettings({ ...DEFAULT_SETTINGS });
+    setBatchDiscount(0);
+    setEditingQuoteId(null);
+    localStorage.removeItem('calculator_inputs');
+    localStorage.removeItem('calculator_customMargin');
+    localStorage.removeItem('calculator_advancedSettings');
+    // Clear URL params if in edit mode
+    if (window.location.search) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 max-w-[1600px] mx-auto">
       {/* Left Panel — Project Details */}
