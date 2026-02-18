@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 
-export default function QuoteActions({ inputs, costs, advancedSettings, customMargin, filamentTypes = [], editingQuoteId = null }) {
+export default function QuoteActions({ inputs, costs, advancedSettings, customMargin, filamentTypes = [], editingQuoteId = null, onSaveSuccess }) {
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
 
