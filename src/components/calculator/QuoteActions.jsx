@@ -88,6 +88,7 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
     }
 
     setSaving(false);
+    if (onSaveSuccess) onSaveSuccess();
   };
 
   return (
