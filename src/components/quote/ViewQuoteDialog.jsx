@@ -145,38 +145,31 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
             )}
           </div>
 
-          {/* Cost Breakdown */}
+          {/* Pricing — clean customer-facing, no internal breakdown */}
           <div className="mb-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-3 pb-2 border-b border-gray-300">Cost Breakdown</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-3 pb-2 border-b border-gray-300">Pricing</h3>
             <table className="w-full text-sm">
               <tbody>
-                <tr className="border-b border-gray-200">
-                  <td className="py-2 text-gray-600">Material Cost</td>
-                  <td className="py-2 text-right font-semibold">AUD {quote.material_cost.toFixed(2)}</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-2 text-gray-600">Labor Cost</td>
-                  <td className="py-2 text-right font-semibold">AUD {quote.labor_cost.toFixed(2)}</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-2 text-gray-600">Machine Cost</td>
-                  <td className="py-2 text-right font-semibold">AUD {quote.machine_cost.toFixed(2)}</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-2 text-gray-600">Hardware Cost</td>
-                  <td className="py-2 text-right font-semibold">AUD {quote.hardware_cost.toFixed(2)}</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-2 text-gray-600">Packaging Cost</td>
-                  <td className="py-2 text-right font-semibold">AUD {quote.packaging_cost.toFixed(2)}</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-2 text-gray-600">VAT ({quote.vat_percent || 0}%)</td>
-                  <td className="py-2 text-right font-semibold">AUD {((quote.total_cost || 0) * ((quote.vat_percent || 0) / 100)).toFixed(2)}</td>
-                </tr>
-                <tr className="border-t-2 border-gray-300 font-bold">
-                  <td className="py-2">Total Cost (incl. VAT)</td>
-                  <td className="py-2 text-right">AUD {((quote.total_cost || 0) * (1 + (quote.vat_percent || 0) / 100)).toFixed(2)}</td>
+                {(quote.vat_percent > 0) && (
+                  <>
+                    <tr className="border-b border-gray-200">
+                      <td className="py-2 text-gray-600">Price (excl. GST)</td>
+                      <td className="py-2 text-right font-semibold">AUD {(quote.final_price_with_vat / (1 + (quote.vat_percent / 100))).toFixed(2)}</td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="py-2 text-gray-600">GST ({quote.vat_percent}%)</td>
+                      <td className="py-2 text-right font-semibold">AUD {(quote.final_price_with_vat - quote.final_price_with_vat / (1 + (quote.vat_percent / 100))).toFixed(2)}</td>
+                    </tr>
+                  </>
+                )}
+                <tr className="border-t-2 border-gray-900 font-bold text-base">
+                  <td className="py-3">
+                    {quote.vat_percent > 0 ? "Total (incl. GST)" : "Total Price"}
+                    {quote.batch_quantity > 1 && <span className="text-sm font-normal text-gray-500 ml-2">× {quote.batch_quantity} units</span>}
+                  </td>
+                  <td className="py-3 text-right text-lg">
+                    AUD {(quote.vat_percent > 0 ? quote.final_price_with_vat : quote.final_price).toFixed(2)}
+                  </td>
                 </tr>
               </tbody>
             </table>
