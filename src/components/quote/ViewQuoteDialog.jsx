@@ -154,7 +154,54 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
             )}
           </div>
 
-          {/* Pricing — clean customer-facing, no internal breakdown */}
+          {/* Full Cost Breakdown — internal view only */}
+          {showBreakdown && (
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-3 pb-2 border-b border-gray-300">Cost Breakdown</h3>
+              <table className="w-full text-sm">
+                <tbody>
+                  {[
+                    { label: "Material Cost", value: quote.material_cost },
+                    { label: "Labour Cost", value: quote.labor_cost },
+                    { label: "Machine Cost", value: quote.machine_cost },
+                    { label: "Electricity Cost", value: quote.electricity_cost },
+                    { label: "Hardware Cost", value: quote.hardware_cost },
+                    { label: "Packaging Cost", value: quote.packaging_cost },
+                  ].filter(r => r.value > 0).map((row, i) => (
+                    <tr key={i} className="border-b border-gray-100">
+                      <td className="py-1.5 text-gray-600">{row.label}</td>
+                      <td className="py-1.5 text-right font-medium">AUD {(row.value || 0).toFixed(2)}</td>
+                    </tr>
+                  ))}
+                  <tr className="border-t-2 border-gray-300 font-bold">
+                    <td className="py-2">Total Landed Cost</td>
+                    <td className="py-2 text-right">AUD {(quote.total_cost || 0).toFixed(2)}</td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="py-1.5 text-gray-600">Margin Applied</td>
+                    <td className="py-1.5 text-right font-medium">{quote.selected_margin || 0}%</td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="py-1.5 text-gray-600">Selling Price (excl. GST)</td>
+                    <td className="py-1.5 text-right font-medium">AUD {(quote.final_price || 0).toFixed(2)}</td>
+                  </tr>
+                  {quote.vat_percent > 0 && (
+                    <tr className="border-b border-gray-100">
+                      <td className="py-1.5 text-gray-600">GST ({quote.vat_percent}%)</td>
+                      <td className="py-1.5 text-right font-medium">AUD {((quote.final_price_with_vat || 0) - (quote.final_price || 0)).toFixed(2)}</td>
+                    </tr>
+                  )}
+                  <tr className="border-t-2 border-gray-900 font-bold text-base">
+                    <td className="py-3">Final Price (incl. GST)</td>
+                    <td className="py-3 text-right text-lg">AUD {(quote.final_price_with_vat || quote.final_price || 0).toFixed(2)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Pricing — clean customer-facing */}
+          {!showBreakdown && (
           <div className="mb-6">
             <h3 className="text-xl font-bold text-gray-900 mb-3 pb-2 border-b border-gray-300">Pricing</h3>
             <table className="w-full text-sm">
@@ -183,6 +230,7 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
               </tbody>
             </table>
           </div>
+          )}
 
 
 
