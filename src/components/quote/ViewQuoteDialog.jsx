@@ -1,13 +1,14 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Download, X } from "lucide-react";
+import { Download, LayoutList, DollarSign } from "lucide-react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { toast } from "sonner";
 
 export default function ViewQuoteDialog({ quote, companySettings, open, onClose }) {
   const contentRef = useRef(null);
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   const handleExportPDF = async () => {
     try {
