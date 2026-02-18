@@ -270,6 +270,7 @@ export default function Calculator() {
           customMargin={customMargin}
           filamentTypes={filamentTypes}
           editingQuoteId={editingQuoteId}
+          onSaveSuccess={handleReset}
         />
       </div>
     </div>
