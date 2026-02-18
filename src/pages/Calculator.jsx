@@ -10,6 +10,7 @@ import CostBreakdownGrid from "../components/calculator/CostBreakdownGrid";
 import CostAllocationChart from "../components/calculator/CostAllocationChart";
 import QuoteActions from "../components/calculator/QuoteActions";
 import CalculatedMetrics from "../components/calculator/CalculatedMetrics";
+import TotalOverviewCard from "../components/calculator/TotalOverviewCard";
 import { calculateCosts, DEFAULT_SETTINGS } from "../components/calculator/pricingEngine";
 
 export default function Calculator() {
