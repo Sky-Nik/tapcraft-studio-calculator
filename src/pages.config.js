@@ -63,14 +63,14 @@ import QuoteHistory from './pages/QuoteHistory';
 import Reports from './pages/Reports';
 import Sales from './pages/Sales';
 import Settings from './pages/Settings';
+import SocialAnalytics from './pages/SocialAnalytics';
+import SocialCalendar from './pages/SocialCalendar';
 import SocialCampaigns from './pages/SocialCampaigns';
 import SocialConnections from './pages/SocialConnections';
 import SocialLibrary from './pages/SocialLibrary';
 import Tasks from './pages/Tasks';
 import Tools from './pages/Tools';
 import UserManagement from './pages/UserManagement';
-import SocialCalendar from './pages/SocialCalendar';
-import SocialAnalytics from './pages/SocialAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -91,14 +91,14 @@ export const PAGES = {
     "Reports": Reports,
     "Sales": Sales,
     "Settings": Settings,
+    "SocialAnalytics": SocialAnalytics,
+    "SocialCalendar": SocialCalendar,
     "SocialCampaigns": SocialCampaigns,
     "SocialConnections": SocialConnections,
     "SocialLibrary": SocialLibrary,
     "Tasks": Tasks,
     "Tools": Tools,
     "UserManagement": UserManagement,
-    "SocialCalendar": SocialCalendar,
-    "SocialAnalytics": SocialAnalytics,
 }
 
 export const pagesConfig = {

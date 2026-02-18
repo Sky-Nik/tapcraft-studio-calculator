@@ -210,7 +210,7 @@ export default function Sidebar({ currentPage }) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[hsl(224,25%,7%)] border-r border-white/[0.06] transition-transform duration-300 lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 w-64 bg-[hsl(224,25%,7%)] border-r border-white/[0.06] transition-transform duration-300 lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:flex-shrink-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
