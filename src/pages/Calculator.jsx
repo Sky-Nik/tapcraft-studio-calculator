@@ -226,6 +226,14 @@ export default function Calculator() {
           totalHardwareCost={totalHardwareCost}
         />
 
+        {/* Total Overview */}
+        <TotalOverviewCard
+          costs={costs}
+          advancedSettings={advancedSettings}
+          customMargin={customMargin}
+          batchQuantity={batchQty}
+        />
+
         {/* Actions */}
         <QuoteActions
           inputs={inputs}
