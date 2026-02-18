@@ -55,10 +55,10 @@ export default function ProjectDetailsCard({
   };
 
   const addHardwareItem = (itemId) => {
-    if (itemId && !inputs.selectedHardware.includes(itemId)) {
+    if (itemId && !inputs.selectedHardware.some(h => h.id === itemId)) {
       setInputs((prev) => ({
         ...prev,
-        selectedHardware: [...prev.selectedHardware, itemId],
+        selectedHardware: [...prev.selectedHardware, { id: itemId, qty: 1 }],
       }));
     }
   };
@@ -66,7 +66,16 @@ export default function ProjectDetailsCard({
   const removeHardwareItem = (itemId) => {
     setInputs((prev) => ({
       ...prev,
-      selectedHardware: prev.selectedHardware.filter((id) => id !== itemId),
+      selectedHardware: prev.selectedHardware.filter((h) => h.id !== itemId),
+    }));
+  };
+
+  const updateHardwareQty = (itemId, qty) => {
+    setInputs((prev) => ({
+      ...prev,
+      selectedHardware: prev.selectedHardware.map(h =>
+        h.id === itemId ? { ...h, qty: Math.max(1, parseInt(qty) || 1) } : h
+      ),
     }));
   };
 
@@ -250,7 +259,7 @@ export default function ProjectDetailsCard({
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-slate-700">
                   {hardwareItems
-                    .filter((item) => !inputs.selectedHardware.includes(item.id))
+                    .filter((item) => !inputs.selectedHardware.some(h => h.id === item.id))
                     .map((item) => (
                       <SelectItem
                         key={item.id}
@@ -260,7 +269,7 @@ export default function ProjectDetailsCard({
                         {item.name} - ${item.unit_cost?.toFixed(2) || "0.00"}
                       </SelectItem>
                     ))}
-                  {hardwareItems.filter((item) => !inputs.selectedHardware.includes(item.id)).length === 0 && (
+                  {hardwareItems.filter((item) => !inputs.selectedHardware.some(h => h.id === item.id)).length === 0 && (
                     <SelectItem value="none" disabled className="text-slate-500">
                       No more items available
                     </SelectItem>
@@ -270,26 +279,33 @@ export default function ProjectDetailsCard({
 
               {inputs.selectedHardware.length > 0 && (
                 <div className="space-y-1.5">
-                  {inputs.selectedHardware.map((hwId) => {
-                    const item = hardwareItems.find((h) => h.id === hwId);
+                  {inputs.selectedHardware.map((hw) => {
+                    const item = hardwareItems.find((h) => h.id === hw.id);
                     if (!item) return null;
+                    const lineTotal = (item.unit_cost || 0) * (hw.qty || 1);
                     return (
                       <div
-                        key={hwId}
-                        className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50"
+                        key={hw.id}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50"
                       >
-                        <span className="text-xs text-slate-300">{item.name}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-violet-400 font-medium">
-                            ${item.unit_cost?.toFixed(2) || "0.00"}
-                          </span>
-                          <button
-                            onClick={() => removeHardwareItem(hwId)}
-                            className="w-5 h-5 rounded flex items-center justify-center hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-colors"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
+                        <span className="text-xs text-slate-300 flex-1">{item.name}</span>
+                        <span className="text-[10px] text-slate-500">${item.unit_cost?.toFixed(2) || "0.00"} ea</span>
+                        <Input
+                          type="number"
+                          min="1"
+                          value={hw.qty || 1}
+                          onChange={(e) => updateHardwareQty(hw.id, e.target.value)}
+                          className="w-14 h-7 text-xs bg-slate-900/50 border-slate-700 text-center px-1"
+                        />
+                        <span className="text-xs text-violet-400 font-medium w-14 text-right">
+                          ${lineTotal.toFixed(2)}
+                        </span>
+                        <button
+                          onClick={() => removeHardwareItem(hw.id)}
+                          className="w-5 h-5 rounded flex items-center justify-center hover:bg-red-500/20 text-slate-500 hover:text-red-400 transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
                       </div>
                     );
                   })}
