@@ -38,8 +38,11 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
 
   const handleSave = async () => {
     setSaving(true);
+    const vatPercent = advancedSettings.vatPercent || 0;
     const customPrice = costs.totalCost / (1 - customMargin / 100);
-    const customPriceVat = customPrice * (1 + (advancedSettings.vatPercent || 15) / 100);
+    const customPriceVat = customPrice * (1 + vatPercent / 100);
+    // final_price shown in quote history = VAT-inclusive if VAT set, otherwise ex-VAT
+    const quotedFinalPrice = vatPercent > 0 ? customPriceVat : customPrice;
 
     // Get unique materials from filament rows
     const materials = [...new Set(
