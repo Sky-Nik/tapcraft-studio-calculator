@@ -61,6 +61,14 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
             <DialogTitle>View Quotation</DialogTitle>
             <div className="flex gap-2">
               <Button
+                variant="outline"
+                onClick={() => setShowBreakdown(v => !v)}
+                className="gap-2"
+              >
+                {showBreakdown ? <DollarSign className="w-4 h-4" /> : <LayoutList className="w-4 h-4" />}
+                {showBreakdown ? "Pricing Only" : "Full Breakdown"}
+              </Button>
+              <Button
                 onClick={handleExportPDF}
                 className="bg-gradient-to-r from-[#1E73FF] to-[#0056D6] hover:from-[#4A9AFF] hover:to-[#1E73FF]"
               >
