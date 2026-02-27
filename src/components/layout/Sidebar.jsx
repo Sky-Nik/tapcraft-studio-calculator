@@ -88,6 +88,11 @@ const navItems = [
 export default function Sidebar({ currentPage }) {
   const [expandedGroups, setExpandedGroups] = useState(["Inventory"]);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userTier, setUserTier] = useState("free");
+
+  useEffect(() => {
+    base44.auth.me().then(u => setUserTier(u?.subscription_tier || "free")).catch(() => {});
+  }, []);
 
   const toggleGroup = (label) => {
     setExpandedGroups((prev) =>
