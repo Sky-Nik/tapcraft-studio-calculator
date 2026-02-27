@@ -71,6 +71,7 @@ import SocialLibrary from './pages/SocialLibrary';
 import Tasks from './pages/Tasks';
 import Tools from './pages/Tools';
 import UserManagement from './pages/UserManagement';
+import Subscription from './pages/Subscription';
 import __Layout from './Layout.jsx';
 
 
@@ -99,6 +100,7 @@ export const PAGES = {
     "Tasks": Tasks,
     "Tools": Tools,
     "UserManagement": UserManagement,
+    "Subscription": Subscription,
 }
 
 export const pagesConfig = {
