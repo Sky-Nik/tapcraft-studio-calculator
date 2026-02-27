@@ -28,7 +28,8 @@ import {
   Image,
   Calendar,
   Link2,
-  LineChart
+  LineChart,
+  Crown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
