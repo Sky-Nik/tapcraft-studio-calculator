@@ -214,7 +214,7 @@ export default function QuoteHistory() {
                   <TableCell>
                     <Select
                       value={q.status || "draft"}
-                      onValueChange={(v) => updateMutation.mutate({ id: q.id, data: { status: v } })}
+                      onValueChange={(v) => updateMutationWithSaleSync.mutate({ id: q.id, data: { status: v } })}
                     >
                       <SelectTrigger className="w-28 h-7 border-0 p-0 bg-transparent">
                         <Badge className={`${statusColors[q.status || "draft"]} border text-[11px] font-medium`}>
