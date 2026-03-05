@@ -85,21 +85,18 @@ export default function QuoteHistory() {
     return matchSearch && matchStatus;
   });
 
-  const handleCombineQuotes = () => {
+  const handleCombineQuotes = async () => {
     if (selectedQuotes.length < 2) {
       toast.error("Select at least 2 quotes to combine");
       return;
     }
 
     const quotesToCombine = quotes.filter(q => selectedQuotes.includes(q.id));
-    const combined = {
+    const uniqueCustomers = [...new Set(quotesToCombine.map(q => q.customer_name).filter(Boolean))];
+
+    const combinedData = {
+      customer_name: uniqueCustomers.join(", ") || "",
       part_name: quotesToCombine.map(q => q.part_name).join(", "),
-      parts: quotesToCombine.map(q => ({
-        name: q.part_name,
-        material: q.filament_type,
-        weight: q.material_weight_g,
-        quantity: q.batch_quantity || 1
-      })),
       material_cost: quotesToCombine.reduce((sum, q) => sum + (q.material_cost || 0), 0),
       labor_cost: quotesToCombine.reduce((sum, q) => sum + (q.labor_cost || 0), 0),
       machine_cost: quotesToCombine.reduce((sum, q) => sum + (q.machine_cost || 0), 0),
@@ -110,11 +107,16 @@ export default function QuoteHistory() {
       final_price: quotesToCombine.reduce((sum, q) => sum + (q.final_price || 0), 0),
       final_price_with_vat: quotesToCombine.reduce((sum, q) => sum + (q.final_price_with_vat || 0), 0),
       selected_margin: Math.round(quotesToCombine.reduce((sum, q) => sum + (q.selected_margin || 0), 0) / quotesToCombine.length),
+      vat_percent: quotesToCombine[0]?.vat_percent || 0,
+      batch_quantity: quotesToCombine.reduce((sum, q) => sum + (q.batch_quantity || 1), 0),
       status: "draft",
-      combined: true
     };
 
-    setViewingQuote(combined);
+    const saved = await base44.entities.Quote.create(combinedData);
+    queryClient.invalidateQueries({ queryKey: ["quotes"] });
+    setSelectedQuotes([]);
+    toast.success("Combined quote saved to Quote History!");
+    setViewingQuote({ ...saved, combined: true, parts: quotesToCombine.map(q => ({ name: q.part_name, material: q.filament_type, weight: q.material_weight_g, quantity: q.batch_quantity || 1 })) });
   };
 
   return (
