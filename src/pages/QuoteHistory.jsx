@@ -262,7 +262,7 @@ export default function QuoteHistory() {
               ))}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center py-12">
+                  <TableCell colSpan={11} className="text-center py-12">
                     <FileText className="w-8 h-8 text-slate-700 mx-auto mb-2" />
                     <p className="text-sm text-slate-600">No quotes found</p>
                   </TableCell>
