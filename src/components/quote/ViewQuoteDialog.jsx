@@ -101,9 +101,15 @@ export default function ViewQuoteDialog({ quote, companySettings, open, onClose 
           <div className="mb-6">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">QUOTATION</h2>
             <div className="grid grid-cols-2 gap-4 text-sm">
+              {quote.customer_name && (
+                <div className="col-span-2">
+                  <p className="text-gray-600">Prepared For:</p>
+                  <p className="font-semibold text-lg">{quote.customer_name}</p>
+                </div>
+              )}
               <div>
                 <p className="text-gray-600">Quote Date:</p>
-                <p className="font-semibold">{new Date(quote.created_date).toLocaleDateString()}</p>
+                <p className="font-semibold">{quote.created_date ? new Date(quote.created_date).toLocaleDateString() : new Date().toLocaleDateString()}</p>
               </div>
               <div>
                 <p className="text-gray-600">Status:</p>
