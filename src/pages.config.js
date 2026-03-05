@@ -68,10 +68,10 @@ import SocialCalendar from './pages/SocialCalendar';
 import SocialCampaigns from './pages/SocialCampaigns';
 import SocialConnections from './pages/SocialConnections';
 import SocialLibrary from './pages/SocialLibrary';
+import Subscription from './pages/Subscription';
 import Tasks from './pages/Tasks';
 import Tools from './pages/Tools';
 import UserManagement from './pages/UserManagement';
-import Subscription from './pages/Subscription';
 import __Layout from './Layout.jsx';
 
 
@@ -97,10 +97,10 @@ export const PAGES = {
     "SocialCampaigns": SocialCampaigns,
     "SocialConnections": SocialConnections,
     "SocialLibrary": SocialLibrary,
+    "Subscription": Subscription,
     "Tasks": Tasks,
     "Tools": Tools,
     "UserManagement": UserManagement,
-    "Subscription": Subscription,
 }
 
 export const pagesConfig = {
