@@ -79,7 +79,6 @@ const navItems = [
     ],
   },
   { label: "User Management", icon: Users, page: "UserManagement" },
-  { label: "Subscription", icon: Crown, page: "Subscription" },
   { label: "Settings", icon: Settings, page: "Settings" },
 ];
 
