@@ -56,26 +56,45 @@ export default function QuoteHistory() {
     },
   });
 
+  const buildSalePayload = (quote) => ({
+    customer_name: quote.customer_name || "—",
+    customer_email: quote.customer_email || "",
+    product_name: quote.part_name,
+    quantity: quote.batch_quantity || 1,
+    unit_price: quote.final_price || 0,
+    total_amount: (quote.final_price || 0) * (quote.batch_quantity || 1),
+    cost: quote.total_cost || 0,
+    profit: ((quote.final_price || 0) * (quote.batch_quantity || 1)) - (quote.total_cost || 0),
+    sale_date: new Date().toISOString().split("T")[0],
+    status: "completed",
+    notes: `Converted from quote #${quote.id?.slice(-6)}`
+  });
+
   const convertToSaleMutation = useMutation({
     mutationFn: async (quote) => {
-      await base44.entities.Sale.create({
-        customer_name: quote.customer_name || "—",
-        customer_email: quote.customer_email || "",
-        product_name: quote.part_name,
-        quantity: quote.batch_quantity || 1,
-        unit_price: quote.final_price || 0,
-        total_amount: (quote.final_price || 0) * (quote.batch_quantity || 1),
-        cost: quote.total_cost || 0,
-        profit: ((quote.final_price || 0) * (quote.batch_quantity || 1)) - (quote.total_cost || 0),
-        sale_date: new Date().toISOString().split("T")[0],
-        status: "completed",
-        notes: `Converted from quote #${quote.id?.slice(-6)}`
-      });
-      await base44.entities.Quote.update(quote.id, { status: "accepted" });
+      const sale = await base44.entities.Sale.create(buildSalePayload(quote));
+      await base44.entities.Quote.update(quote.id, { status: "accepted", related_sale_id: sale.id });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["quotes"] });
       toast.success("Quote marked as paid and added to Sales!");
+    },
+  });
+
+  const updateMutationWithSaleSync = useMutation({
+    mutationFn: async ({ id, data }) => {
+      await base44.entities.Quote.update(id, data);
+      // If this quote has a linked sale, sync the updated fields to it
+      const quote = quotes.find(q => q.id === id);
+      if (quote?.related_sale_id) {
+        const updatedQuote = { ...quote, ...data };
+        await base44.entities.Sale.update(quote.related_sale_id, buildSalePayload(updatedQuote));
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["quotes"] });
+      queryClient.invalidateQueries({ queryKey: ["sales"] });
+      toast.success("Status updated");
     },
   });
 
