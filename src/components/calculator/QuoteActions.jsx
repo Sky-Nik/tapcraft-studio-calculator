@@ -57,6 +57,7 @@ ${costs.pricingTiers?.map((t) => `  ${t.label} (${t.margin}%): $${t.price.toFixe
     const totalMaterialWeight = inputs.filamentRows?.reduce((sum, row) => sum + (row.usage || 0), 0) || 0;
 
     const quoteData = {
+      customer_name: inputs.customerName || "",
       part_name: inputs.partName || "Untitled Part",
       category: inputs.category || "",
       printer_profile: inputs.printerProfile || "",
