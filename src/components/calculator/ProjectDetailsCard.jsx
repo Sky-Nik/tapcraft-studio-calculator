@@ -107,6 +107,15 @@ export default function ProjectDetailsCard({
         </div>
 
         <div className="p-5 space-y-4">
+          <FieldWithTooltip label="Customer Name" tooltip="Name of the customer this quote is for">
+            <Input
+              className={inputClass}
+              placeholder="Enter customer name..."
+              value={inputs.customerName || ""}
+              onChange={(e) => handleInput("customerName", e.target.value)}
+            />
+          </FieldWithTooltip>
+
           <FieldWithTooltip label="Part Name" tooltip="A descriptive name for the part being quoted">
             <Input
               className={inputClass}
