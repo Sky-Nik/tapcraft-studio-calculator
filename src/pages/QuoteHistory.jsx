@@ -56,6 +56,29 @@ export default function QuoteHistory() {
     },
   });
 
+  const convertToSaleMutation = useMutation({
+    mutationFn: async (quote) => {
+      await base44.entities.Sale.create({
+        customer_name: quote.customer_name || "—",
+        customer_email: quote.customer_email || "",
+        product_name: quote.part_name,
+        quantity: quote.batch_quantity || 1,
+        unit_price: quote.final_price || 0,
+        total_amount: (quote.final_price || 0) * (quote.batch_quantity || 1),
+        cost: quote.total_cost || 0,
+        profit: ((quote.final_price || 0) * (quote.batch_quantity || 1)) - (quote.total_cost || 0),
+        sale_date: new Date().toISOString().split("T")[0],
+        status: "completed",
+        notes: `Converted from quote #${quote.id?.slice(-6)}`
+      });
+      await base44.entities.Quote.update(quote.id, { status: "accepted" });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["quotes"] });
+      toast.success("Quote marked as paid and added to Sales!");
+    },
+  });
+
   const filtered = quotes.filter((q) => {
     const matchSearch = !search || q.part_name?.toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === "all" || q.status === statusFilter;
