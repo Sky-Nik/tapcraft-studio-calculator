@@ -72,6 +72,7 @@ export default function Calculator() {
         const quote = JSON.parse(decodeURIComponent(quoteData));
         setEditingQuoteId(editId);
         setInputs({
+          customerName: quote.customer_name || "",
           partName: quote.part_name || "",
           category: quote.category || "",
           printerProfile: quote.printer_profile || "",
