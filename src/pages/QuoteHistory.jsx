@@ -237,12 +237,22 @@ export default function QuoteHistory() {
                        <Edit className="w-4 h-4" />
                      </Button>
                      <Button
-                       variant="ghost"
-                       size="icon"
-                       className="text-slate-600 hover:text-red-400 hover:bg-red-500/10 w-8 h-8 rounded-lg"
-                       onClick={() => deleteMutation.mutate(q.id)}
+                      variant="ghost"
+                      size="icon"
+                      title="Mark as Paid"
+                      className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 w-8 h-8 rounded-lg"
+                      onClick={() => convertToSaleMutation.mutate(q)}
+                      disabled={convertToSaleMutation.isPending}
                      >
-                       <Trash2 className="w-4 h-4" />
+                      <BadgeDollarSign className="w-4 h-4" />
+                     </Button>
+                     <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-slate-600 hover:text-red-400 hover:bg-red-500/10 w-8 h-8 rounded-lg"
+                      onClick={() => deleteMutation.mutate(q.id)}
+                     >
+                      <Trash2 className="w-4 h-4" />
                      </Button>
                    </div>
                   </TableCell>
