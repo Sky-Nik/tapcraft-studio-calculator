@@ -189,6 +189,7 @@ export default function QuoteHistory() {
                       className="w-4 h-4 rounded border-slate-600 bg-slate-700"
                     />
                   </TableCell>
+                  <TableCell className="text-slate-400 text-sm">{q.customer_name || "—"}</TableCell>
                   <TableCell className="font-medium text-slate-200">{q.part_name || "—"}</TableCell>
                   <TableCell className="text-slate-400 text-sm">{q.category || "—"}</TableCell>
                   <TableCell className="text-slate-400 text-sm">{q.filament_type || "—"}</TableCell>
