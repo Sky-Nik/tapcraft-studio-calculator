@@ -16,6 +16,7 @@ import { calculateCosts, DEFAULT_SETTINGS } from "../components/calculator/prici
 export default function Calculator() {
   const [editingQuoteId, setEditingQuoteId] = useState(null);
   const [inputs, setInputs] = useState({
+    customerName: "",
     partName: "",
     category: "",
     printerProfile: "",
