@@ -160,6 +160,7 @@ export default function QuoteHistory() {
             <TableHeader>
               <TableRow className="border-white/[0.06] hover:bg-transparent">
                 <TableHead className="text-slate-500 font-medium text-xs w-12"></TableHead>
+                <TableHead className="text-slate-500 font-medium text-xs">Customer</TableHead>
                 <TableHead className="text-slate-500 font-medium text-xs">Part Name</TableHead>
                 <TableHead className="text-slate-500 font-medium text-xs">Category</TableHead>
                 <TableHead className="text-slate-500 font-medium text-xs">Material</TableHead>
