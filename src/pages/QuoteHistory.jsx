@@ -48,13 +48,7 @@ export default function QuoteHistory() {
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Quote.update(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["quotes"] });
-      toast.success("Status updated");
-    },
-  });
+
 
   const buildSalePayload = (quote) => ({
     customer_name: quote.customer_name || "—",
