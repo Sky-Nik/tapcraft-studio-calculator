@@ -172,6 +172,7 @@ export default function Calculator() {
 
   const handleReset = () => {
     const defaultInputs = {
+      customerName: "",
       partName: "",
       category: "",
       printerProfile: "",
