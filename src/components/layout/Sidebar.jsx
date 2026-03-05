@@ -179,30 +179,12 @@ export default function Sidebar({ currentPage }) {
 
       {/* Bottom section */}
       <div className="px-4 py-4 border-t border-white/[0.06]">
-        {userTier === "free" ? (
-          <Link to={createPageUrl("Subscription")} className="block">
-            <div className="bg-gradient-to-br from-violet-500/15 to-purple-600/10 rounded-xl p-4 border border-violet-500/20 hover:border-violet-500/40 transition-all cursor-pointer">
-              <div className="flex items-center gap-2 mb-1">
-                <Crown className="w-3.5 h-3.5 text-violet-400" />
-                <p className="text-xs text-violet-400 font-semibold">Free Plan</p>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-                Upgrade to Maker for unlimited quotes, filament database & more.
-              </p>
-              <div className="mt-2 text-[11px] font-semibold text-violet-400">Upgrade → $19/mo</div>
-            </div>
-          </Link>
-        ) : (
-          <div className="bg-gradient-to-br from-[#1E73FF]/10 to-[#0056D6]/5 rounded-xl p-4 border border-[#1E73FF]/10">
-            <div className="flex items-center gap-2">
-              <Crown className="w-3.5 h-3.5 text-[#1E73FF]" />
-              <p className="text-xs text-[#1E73FF] font-semibold capitalize">{userTier} Plan</p>
-            </div>
-            <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
-              Use batch mode for bulk orders to get volume discounts on machine costs.
-            </p>
-          </div>
-        )}
+        <div className="bg-gradient-to-br from-[#1E73FF]/10 to-[#0056D6]/5 rounded-xl p-4 border border-[#1E73FF]/10">
+          <p className="text-xs text-slate-400 font-medium">Pro Tip</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+            Use batch mode for bulk orders to get volume discounts on machine costs.
+          </p>
+        </div>
       </div>
     </div>
   );
